@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:ride_way_app/core/themes/theme_notfire.dart';
-import 'package:ride_way_app/features/auth/screens/splash_screen.dart';
+import 'package:ride_way_app/features/splash/splash_screen.dart';
 
 void main() {
   runApp(
