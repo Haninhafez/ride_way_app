@@ -4,10 +4,15 @@ import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:ride_way_app/core/themes/theme_notfire.dart';
 import 'package:ride_way_app/features/splash/splash_screen.dart';
 
-void main() {
+void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+  final themeNotifier = ThemeNotifier();
+  await themeNotifier.loadTheme();
+
   runApp(
     ChangeNotifierProvider(
-      create: (context) => ThemeNotifier(),
+      create: (_) => ThemeNotifier(),
       child: const RideWayApp(),
     ),
   );
@@ -18,7 +23,7 @@ class RideWayApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
-      builder: (context, ThemeNotifier themeNotifier, child) {
+      builder: (context,  themeNotifier, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           darkTheme: darkTheme,
@@ -26,7 +31,6 @@ class RideWayApp extends StatelessWidget {
           themeMode: themeNotifier.isDarkMode
               ? ThemeMode.dark
               : ThemeMode.light,
-
           home: SplashScreen(),
         );
       },

@@ -6,16 +6,15 @@ class ThemeNotifier extends ChangeNotifier {
 
   bool get isDarkMode => _isDarkMode;
 
- Future<void> loadTheme() async {
+  Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     _isDarkMode = prefs.getBool('isDarkMode') ?? true;
     notifyListeners();
   }
 
-  void toggleDarkMode()async {
-    
+  void toggleDarkMode() async {
     _isDarkMode = !_isDarkMode;
-     final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isDarkMode', _isDarkMode);
     notifyListeners();
   }
