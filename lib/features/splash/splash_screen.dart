@@ -2,8 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:ride_way_app/auth_gate.dart';
 import 'package:ride_way_app/features/auth/presentation/screens/login_screen.dart';
-import 'package:ride_way_app/features/auth/presentation/screens/presenter/auth_mode_provider.dart';
+import 'package:ride_way_app/features/auth/presentation/screens/register_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,10 +21,9 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (_) => AuthModeProvider(),
-            child: LoginScreen(),
-          ),
+          builder: (context) =>
+          LoginScreen()
+          
         ),
       );
     });
@@ -36,7 +36,12 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Lottie.asset("assets/animations/tarin_loder.json")),
+          Center(
+            child: Lottie.asset(
+              "assets/animations/tarin_loder.json",
+              height: 25,
+            ),
+          ),
           SizedBox(height: 20),
           AnimatedTextKit(
             stopPauseOnTap: true,

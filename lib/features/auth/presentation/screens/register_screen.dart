@@ -13,14 +13,14 @@ import 'package:ride_way_app/features/auth/presentation/widgets/regiseter_card.d
 import 'package:ride_way_app/features/auth/presentation/widgets/register_viwe.dart';
 import 'package:ride_way_app/features/home/presentation/screen/home_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context.loaderOverlay.show();
         }
       },
-      child: LoaderOverlay(child: LoginViwe()),
+      child: LoaderOverlay(child: RegisterViwe()),
     );
   }
 }

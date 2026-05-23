@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ride_way_app/features/auth/presentation/presenter/bloc/auth_bloc.dart';
 import 'package:ride_way_app/features/home/presentation/screen/home_screen.dart';
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key, required this.width, required this.theme});
+  const ContinueButton({
+    super.key,
+    required this.width,
+    required this.theme,
+    required this.onTap,
+  });
 
   final double width;
   final ThemeData theme;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-      },
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 22),
         margin: EdgeInsets.symmetric(horizontal: width * 0.1),

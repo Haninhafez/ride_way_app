@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ride_way_app/features/auth/presentation/screens/login_screen.dart';
-import 'package:ride_way_app/features/auth/presentation/screens/widgets/social_button.dart';
+import 'package:ride_way_app/features/auth/presentation/screens/register_screen.dart';
+import 'package:ride_way_app/features/auth/presentation/widgets/social_button.dart';
 
 class SocialMediaAuth extends StatelessWidget {
   const SocialMediaAuth({super.key, required this.theme});

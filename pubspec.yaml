@@ -29,11 +29,15 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   animated_text_kit: ^4.3.0
+  bloc: ^9.2.0
   cupertino_icons: ^1.0.8
+  dio: ^5.9.2
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
   flutter_svg: ^2.2.4
   google_fonts: ^8.1.0
+  loader_overlay: ^5.0.0
   lottie: ^3.3.3
   provider: ^6.1.5+1
   shared_preferences: ^2.5.5
