@@ -10,22 +10,23 @@ class AuthImplentationRepo extends AuthRepo {
   AuthImplentationRepo(this._authDataSource);
 
   @override
-  Future<UserEntity> login(String email, String password) async {
+  Future<UserEntity> login(String email, dynamic password) async {
     final model = await _authDataSource.login(email, password);
     CacheHelper.saveData(key: ApiKeys.token, value: model.token);
-CacheHelper.saveData(key: ApiKeys.refreshToken, value: model.refreshToken);
+    CacheHelper.saveData(key: ApiKeys.refreshToken, value: model.refreshToken);
+    CacheHelper.saveData(key: ApiKeys.email, value: model.email);
+    CacheHelper.saveData(key: ApiKeys.firstName, value: model.firstName);
+    CacheHelper.saveData(key: ApiKeys.lastName, value: model.lastName);
     return model.toEntity();
   }
 
   @override
-  Future<void> refreshToken(String accessToken, String refreshToken) async{
+  Future<void> refreshToken(String accessToken, String refreshToken) async {
     try {
       await _authDataSource.refreshToken(refreshToken, accessToken);
     } catch (e) {
       await CacheHelper.clearData();
     }
-     
-   
   }
 
   @override
@@ -33,17 +34,25 @@ CacheHelper.saveData(key: ApiKeys.refreshToken, value: model.refreshToken);
     String firstName,
     String lastName,
     String email,
-    String password,
-  ) async{
-    final model =await _authDataSource.register(firstName, lastName, email, password);
+    dynamic password,
+  ) async {
+    final model = await _authDataSource.register(
+      firstName,
+      lastName,
+      email,
+      password,
+    );
     CacheHelper.saveData(key: ApiKeys.token, value: model.token);
     CacheHelper.saveData(key: ApiKeys.refreshToken, value: model.refreshToken);
+        CacheHelper.saveData(key: ApiKeys.email, value: model.email);
+    CacheHelper.saveData(key: ApiKeys.firstName, value: model.firstName);
+    CacheHelper.saveData(key: ApiKeys.lastName, value: model.lastName);
     return model.toEntity();
   }
 
   @override
-  Future<void> revokeToken(String accessToken, String refreshToken)async {
-  await _authDataSource.revokeToken(refreshToken, accessToken);
-  await CacheHelper.clearData();
+  Future<void> revokeToken(String accessToken, String refreshToken) async {
+    await _authDataSource.revokeToken(refreshToken, accessToken);
+    await CacheHelper.clearData();
   }
 }

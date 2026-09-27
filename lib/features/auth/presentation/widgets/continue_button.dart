@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ride_way_app/features/auth/presentation/presenter/bloc/auth_bloc.dart';
-import 'package:ride_way_app/features/home/presentation/screen/home_screen.dart';
+import 'package:ride_way_app/features/home/presentation/screen/navigation_bar.dart';
 
 class ContinueButton extends StatelessWidget {
   const ContinueButton({
