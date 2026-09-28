@@ -74,6 +74,7 @@ final trainListCubit = TrainListCubit(
 
 /// Central GoRouter configuration for RideWay.
 final GoRouter appRouter = GoRouter(
+
   initialLocation: '/',
   redirect: (context, state) {
    final token = CacheHelper.getData('token');

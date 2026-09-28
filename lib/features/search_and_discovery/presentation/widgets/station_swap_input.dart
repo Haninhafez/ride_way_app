@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:ride_way_app/features/home/presentation/widgets/show_model_bottom_sheet.dart';
 import '../../domain/entities/station.dart';
 import '../../../../core/themes/theme_data.dart';
 
@@ -39,11 +40,16 @@ class StationSwapInput extends StatelessWidget {
           Column(
             children: [
               // From Field
-              _buildStationRow(
-                context: context,
-                label: 'search.from'.tr(),
-                station: origin,
-                isDark: isDark,
+              GestureDetector(
+                onTap:(){
+                  showModelBottomSheet(context);
+                },
+                child: _buildStationRow(
+                  context: context,
+                  label: 'search.from'.tr(),
+                  station: origin,
+                  isDark: isDark,
+                ),
               ),
               const SizedBox(height: 8),
               const Divider(height: 1),

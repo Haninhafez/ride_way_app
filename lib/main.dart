@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart' hide NavigationBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +15,12 @@ import 'package:ride_way_app/features/auth/data_layer/data_source/auth_data_sour
 import 'package:ride_way_app/features/auth/data_layer/repo/auth_implentation_repo.dart';
 import 'package:ride_way_app/features/auth/presentation/presenter/bloc/auth_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:ride_way_app/features/home/presentation/widgets/show_model_bottom_sheet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp();
   await CacheHelper.init();
   await setupDependencies();
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -27,15 +28,13 @@ Future<void> setupDependencies() async {
     ),
   );
   sl.registerLazySingleton<AuthDataSource>(
-    () => AuthDataSource(dio: sl<Dio>()),
+    () => AuthDataSource(dio: sl<Dio>(), firestore: sl<FirebaseFirestore>()),
   );
+  sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   sl.registerLazySingleton<AuthRepo>(
     () => AuthImplentationRepo(sl<AuthDataSource>()),
   );
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl<AuthRepo>()));
 
   sl.registerLazySingleton<Dio>(() => dio);
-
-
-
 }

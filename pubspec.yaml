@@ -12,6 +12,7 @@ dependencies:
   bloc: ^9.2.0
   cloud_firestore: ^6.4.1
   cupertino_icons: ^1.0.8
+  dartz: ^0.10.1
   dio: ^5.11.1
   dotlottie_flutter: ^0.1.7
   dotted_line: ^3.3.0

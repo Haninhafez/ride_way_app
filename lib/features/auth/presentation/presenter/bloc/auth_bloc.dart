@@ -14,47 +14,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this.authRepo) : super(AuthInitial()) {
     on<AuthLoginEvent>((event, emit) async {
       emit(AuthLoading());
-      try {
-        final user = await authRepo.login(event.email, event.password);
-        emit(AuthSuccess(user));
-      } catch (e) {
-        emit(AuthError(e.toString()));
-      }
+  final user = await authRepo.login(event.email, event.password);
+    user.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthSuccess(r)));
     });
 
     on<AuthRegisterEvent>((event, emit) async {
       emit(AuthLoading());
-      try {
-        final user = await authRepo.register(
-          event.firstName,
-          event.lastName,
-          event.email,
-          event.password,
-        );
-        emit(AuthSuccess(user));
-      } catch (e) {
-        emit(AuthError(e.toString()));
-      }
+      final user = await authRepo.register(
+        event.firstName,
+        event.lastName,
+        event.email,
+        event.password,
+      );
+      user.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthSuccess(r)));
     });
 
     on<AuthRefreshTokenEvent>((event, emit) async {
       emit(AuthLoading());
-      try {
-        await authRepo.refreshToken(event.accessToken, event.refreshToken);
-        emit(AuthInitial());
-      } catch (e) {
-        emit(AuthError(e.toString()));
-      }
+      final user = await authRepo.refreshToken(event.accessToken, event.refreshToken);
+      user.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthInitial()));
     });
 
     on<AuthRevokeTokenEvent>((event, emit) async {
       emit(AuthLoading());
-      try {
-        await authRepo.revokeToken(event.accessToken, event.refreshToken);
-        emit(AuthUnauthenticated());
-      } catch (e) {
-        emit(AuthError(e.toString()));
-      }
+      final user = await authRepo.revokeToken(event.accessToken, event.refreshToken);
+      user.fold((l) => emit(AuthError(l.message)), (r) => emit(AuthInitial()));
     });
   }
 }
