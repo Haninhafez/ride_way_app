@@ -14,68 +14,102 @@ class TrainListCubit extends Cubit<TrainListState> {
   }) : super(TrainListState());
 
   Future<void> executeSearch(SearchQuery query) async {
-    emit(state.copyWith(
-      status: TrainListStatus.loading,
-      query: query,
-      selectedDate: query.departureDate,
-    ));
+    emit(
+      state.copyWith(
+        status: TrainListStatus.loading,
+        query: query,
+        selectedDate: query.departureDate,
+      ),
+    );
 
-    try {
-      final results = await searchTrainsUseCase.execute(query);
+    final results = await searchTrainsUseCase.execute(query);
 
-      if (results.isEmpty) {
-        emit(state.copyWith(
-          status: TrainListStatus.empty,
-          allTrains: const [],
-          filteredTrains: const [],
-        ));
-      } else {
-        final sorted = await filterAndSortTrainsUseCase.execute(
-          trains: results,
-          sortBy: state.sortBy,
-          maxPrice: state.maxPriceFilter,
+    results.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: TrainListStatus.error,
+            errorMessage: failure.message,
+          ),
         );
-
-        emit(state.copyWith(
-          status: TrainListStatus.success,
-          allTrains: results,
-          filteredTrains: sorted,
-        ));
-      }
-    } catch (e) {
-      emit(state.copyWith(
-        status: TrainListStatus.error,
-        errorMessage: e.toString(),
-      ));
-    }
+      },
+      (trains) {
+        emit(
+          state.copyWith(
+            status: TrainListStatus.success,
+            allTrains: trains,
+            filteredTrains: trains,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> changeDate(DateTime newDate) async {
     if (state.query == null) return;
+
     final updatedQuery = state.query!.copyWith(departureDate: newDate);
+
     await executeSearch(updatedQuery);
   }
 
   Future<void> changeSortBy(String sortBy) async {
-    emit(state.copyWith(sortBy: sortBy));
-    final sorted = await filterAndSortTrainsUseCase.execute(
+    final result = await filterAndSortTrainsUseCase.call(
       trains: state.allTrains,
       sortBy: sortBy,
       maxPrice: state.maxPriceFilter,
     );
-    emit(state.copyWith(filteredTrains: sorted));
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: TrainListStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
+      (sortedTrains) {
+        emit(
+          state.copyWith(
+            sortBy: sortBy,
+            filteredTrains: sortedTrains,
+            status: sortedTrains.isEmpty
+                ? TrainListStatus.empty
+                : TrainListStatus.success,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> applyPriceFilter(double? maxPrice) async {
-    emit(state.copyWith(maxPriceFilter: maxPrice));
-    final filtered = await filterAndSortTrainsUseCase.execute(
+    final result = await filterAndSortTrainsUseCase.call(
       trains: state.allTrains,
       sortBy: state.sortBy,
       maxPrice: maxPrice,
     );
-    emit(state.copyWith(
-      filteredTrains: filtered,
-      status: filtered.isEmpty ? TrainListStatus.empty : TrainListStatus.success,
-    ));
+
+    result.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: TrainListStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
+      (filteredTrains) {
+        emit(
+          state.copyWith(
+            maxPriceFilter: maxPrice,
+            filteredTrains: filteredTrains,
+            status: filteredTrains.isEmpty
+                ? TrainListStatus.empty
+                : TrainListStatus.success,
+          ),
+        );
+      },
+    );
   }
 }

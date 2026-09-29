@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart' hide NavigationBar;
@@ -21,6 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseFirestore.setLoggingEnabled(true);
   await CacheHelper.init();
   await setupDependencies();
 
@@ -54,30 +56,33 @@ class RideWayApp extends StatelessWidget {
 
         final customLight = lightTheme.copyWith(
           textTheme: lightTheme.textTheme.apply(fontFamily: fontFamily),
+          scaffoldBackgroundColor: lightTheme.scaffoldBackgroundColor,
+          
         );
         final customDark = darkTheme.copyWith(
           textTheme: darkTheme.textTheme.apply(fontFamily: fontFamily),
-          
+          scaffoldBackgroundColor: darkTheme.scaffoldBackgroundColor,
         );
 
-       return BlocProvider(
-  create: (context) => sl<AuthBloc>(),
-  child: MaterialApp.router(
-    debugShowCheckedModeBanner: false,
-    routerConfig: appRouter,
+        return BlocProvider(
+          create: (context) => sl<AuthBloc>(),
+          child: MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerConfig: appRouter,
+            
 
-    localizationsDelegates: context.localizationDelegates,
-    supportedLocales: context.supportedLocales,
-    locale: context.locale,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
 
-    theme: customLight,
-    darkTheme: customDark,
+            theme: customLight,
+            darkTheme: customDark,
 
-    themeMode: themeNotifier.isDarkMode
-        ? ThemeMode.dark
-        : ThemeMode.light,
-  ),
-);
+            themeMode: themeNotifier.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
+          ),
+        );
       },
     );
   }

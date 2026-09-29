@@ -29,15 +29,15 @@ class _TrainListScreenState extends State<TrainListScreen> {
     _effectiveQuery =
         widget.searchQuery ??
         SearchQuery(
-          originStation: const Station(
-            stationCode: 'DMM',
+          originStation:  Station(
+          
             name: 'Dammam',
-            city: 'Dammam',
+            city: 'Dammam', code: '', nameAr: '', lat: 5.4, lng: 85,
           ),
-          destinationStation: const Station(
-            stationCode: 'JED',
+          destinationStation:  Station(
+          
             name: 'Jeddah',
-            city: 'Jeddah',
+            city: 'Jeddah', code: '', nameAr: '', lat: 50, lng: 81,
           ),
           departureDate: DateTime(2026, 8, 14),
           passengerCount: 2,

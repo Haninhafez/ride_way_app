@@ -14,6 +14,7 @@ class TrainSearchResult extends Equatable {
   final double startingPrice;
   final int availableSeatsCount;
   final String status;
+  final List<String> amenities;
 
   const TrainSearchResult({
     required this.id,
@@ -29,6 +30,7 @@ class TrainSearchResult extends Equatable {
     required this.startingPrice,
     required this.availableSeatsCount,
     this.status = 'On time',
+    this.amenities = const [],
   });
 
   bool get isLowSeat => availableSeatsCount <= 5;
@@ -48,5 +50,6 @@ class TrainSearchResult extends Equatable {
         startingPrice,
         availableSeatsCount,
         status,
+        amenities,
       ];
 }

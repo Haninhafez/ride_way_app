@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide NavigationBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ride_way_app/core/database/cache/cache_helper.dart';
+import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/features/account/presentation/screens/edit_profile_screen.dart';
 import 'package:ride_way_app/features/account/presentation/screens/password_security_screen.dart';
 import 'package:ride_way_app/features/account/presentation/screens/profile_screen.dart';
@@ -23,16 +24,7 @@ import 'package:ride_way_app/features/booking/presentation/screens/seat_selectio
 import 'package:ride_way_app/features/booking/presentation/screens/train_details_screen.dart';
 import 'package:ride_way_app/features/home/presentation/screen/navigation_bar.dart';
 import 'package:ride_way_app/features/onboarding/onboarding_screen.dart';
-import 'package:ride_way_app/features/search/presentation/screens/home_search_invalid.dart';
-import 'package:ride_way_app/features/search/presentation/screens/stations_unavailable_screen.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/datasources/search_local_data_source.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/datasources/search_remote_data_source.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/repositories/search_repository_impl.dart';
 import 'package:ride_way_app/features/search_and_discovery/domain/entities/search_query.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/filter_and_sort_trains_usecase.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/get_recent_searches_usecase.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/get_saved_routes_usecase.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/search_trains_usecase.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/train_list_cubit.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/screens/train_list_screen.dart';
@@ -54,69 +46,51 @@ final bookingCubit = BookingCubit(
   processPaymentUseCase: ProcessPaymentUseCase(_bookingRepository),
 );
 
-// Clean Architecture DI Setup for Search & Discovery
-final _searchRemoteDataSource = SearchRemoteDataSourceImpl();
-final _searchLocalDataSource = SearchLocalDataSourceImpl();
-final _searchRepository = SearchRepositoryImpl(
-  remoteDataSource: _searchRemoteDataSource,
-  localDataSource: _searchLocalDataSource,
-);
-
-final searchCubit = SearchCubit(
-  getRecentSearchesUseCase: GetRecentSearchesUseCase(_searchRepository),
-  getSavedRoutesUseCase: GetSavedRoutesUseCase(_searchRepository),
-);
-
-final trainListCubit = TrainListCubit(
-  searchTrainsUseCase: SearchTrainsUseCase(_searchRepository),
-  filterAndSortTrainsUseCase: FilterAndSortTrainsUseCase(_searchRepository),
-);
-
 /// Central GoRouter configuration for RideWay.
 final GoRouter appRouter = GoRouter(
-
   initialLocation: '/',
   redirect: (context, state) {
-   final token = CacheHelper.getData('token');
-  final isOnboardingSeen = CacheHelper.getData('isOnboardingSeen') ?? false;
+    final token = CacheHelper.getData('token');
+    final isOnboardingSeen = CacheHelper.getData('isOnboardingSeen') ?? false;
 
-  final isSplash = state.matchedLocation == '/';
-  final isOnboarding = state.matchedLocation == '/onboarding';
+    final isSplash = state.matchedLocation == '/';
+    final isOnboarding = state.matchedLocation == '/onboarding';
 
-  final isAuth = state.matchedLocation == '/login' ||
-      state.matchedLocation == '/register' ||
-      state.matchedLocation == '/reset-password';
+    final isAuth =
+        state.matchedLocation == '/login' ||
+        state.matchedLocation == '/register' ||
+        state.matchedLocation == '/reset-password';
 
-  final isBookingOrSearchRoute =
-      state.matchedLocation.startsWith('/train-details') ||
-      state.matchedLocation.startsWith('/seat-selection') ||
-      state.matchedLocation.startsWith('/passenger-details') ||
-      state.matchedLocation.startsWith('/payment') ||
-      state.matchedLocation.startsWith('/booking-success') ||
-      state.matchedLocation.startsWith('/train-list');
+    final isBookingOrSearchRoute =
+        state.matchedLocation.startsWith('/train-details') ||
+        state.matchedLocation.startsWith('/seat-selection') ||
+        state.matchedLocation.startsWith('/passenger-details') ||
+        state.matchedLocation.startsWith('/payment') ||
+        state.matchedLocation.startsWith('/booking-success') ||
+        state.matchedLocation.startsWith('/train-list');
 
-  // 1. ترك الـ Splash تُعرض حتى تنتهي المهلة الزمنية (Timer)
-  if (isSplash) {
+    // 1. ترك الـ Splash تُعرض حتى تنتهي المهلة الزمنية (Timer)
+    if (isSplash) {
+      return null;
+    }
+
+    // 2. إذا كان مسجلاً بالفعلاً وحاول فتح Onboarding أو Auth -> توجيه للـ Home
+    if (token != null && (isAuth || isOnboarding)) {
+      return '/home';
+    }
+
+    // 3. إذا لم يمر بالـ Onboarding من قبل -> توجيه للـ Onboarding
+    if (!isOnboardingSeen && !isOnboarding) {
+      return '/onboarding';
+    }
+
+    // 4. إذا لم يكن مسجلاً وبحاجة للتسجيل عند محاولة فتح شاشات محمية
+    if (token == null && !isAuth && !isBookingOrSearchRoute && !isOnboarding) {
+      return '/login';
+    }
+
     return null;
-  }
-
-  // 2. إذا كان مسجلاً بالفعلاً وحاول فتح Onboarding أو Auth -> توجيه للـ Home
-  if (token != null && (isAuth || isOnboarding)) {
-    return '/home';
-  }
-
-  // 3. إذا لم يمر بالـ Onboarding من قبل -> توجيه للـ Onboarding
-  if (!isOnboardingSeen && !isOnboarding) {
-    return '/onboarding';
-  }
-
-  // 4. إذا لم يكن مسجلاً وبحاجة للتسجيل عند محاولة فتح شاشات محمية
-  if (token == null && !isAuth && !isBookingOrSearchRoute && !isOnboarding) {
-    return '/login';
-  }
-
-  return null;
-},
+  },
   routes: [
     GoRoute(path: '/', builder: (context, state) => SplashScreen()),
     GoRoute(
@@ -124,7 +98,7 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) {
         return CustomTransitionPage(
           key: state.pageKey,
-          child:  OnboardingScreen(),
+          child: OnboardingScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -168,18 +142,29 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/home',
       name: 'home',
-      builder: (context, state) => MultiBlocProvider(
-        providers: [BlocProvider<SearchCubit>.value(value: searchCubit)],
-        child: NavigationBar(),
-      ),
+      builder: (context, state) {
+         final query = state.extra as SearchQuery?;
+    return    MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<SearchCubit>()..loadStations(),
+            ),
+            BlocProvider(
+              create: (context) => sl<TrainListCubit>()..executeSearch(query!),
+            ),
+          ],
+
+          child: NavigationBar(),
+        );
+      },
     ),
     GoRoute(
       path: '/train-list',
       name: 'train-list',
       builder: (context, state) {
         final query = state.extra as SearchQuery?;
-        return BlocProvider<TrainListCubit>.value(
-          value: trainListCubit,
+        return BlocProvider(
+          create: (context) => sl<TrainListCubit>(),
           child: TrainListScreen(searchQuery: query),
         );
       },

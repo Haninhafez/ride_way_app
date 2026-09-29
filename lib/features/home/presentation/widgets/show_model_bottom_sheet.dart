@@ -1,45 +1,87 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-showModelBottomSheet(BuildContext context) async {
-  showModalBottomSheet(
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ride_way_app/core/di/injecation.dart';
+import 'package:ride_way_app/features/search_and_discovery/domain/entities/station.dart';
+import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
+import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_state.dart';
+Future<Station?> showModelBottomSheet(
+  BuildContext context, {
+  required bool isFrom,
+}) async {
+  return showModalBottomSheet<Station>(
     context: context,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(20),
+      ),
     ),
-    builder: (BuildContext context) {
-      final stationData = getStationData();
-      return Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // علشان ياخد مساحة على قد المحتوى بس
-          children: [
-            ListTile(
-              leading: const Icon(Icons.share),
-              title: const Text('مشاركة'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.copy),
-              title: const Text('نسخ الرابط'),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
+    builder: (bottomSheetContext) {
+      return BlocProvider.value(
+        value: context.read<SearchCubit>(),
+        child: BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            if (state.status == SearchStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (state.status == SearchStatus.error) {
+              return Center(
+                child: Text(
+                  state.errorMessage ?? 'Something went wrong',
+                ),
+              );
+            }
+
+            if (state.status == SearchStatus.loaded) {
+              final stations = isFrom
+                  ? state.availableStations
+                  : context.read<SearchCubit>().getAvailableStations();
+
+              if (stations.isEmpty) {
+                return const Center(
+                  child: Text('No stations found'),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: stations.length,
+                itemBuilder: (context, index) {
+                  final station = stations[index];
+
+                  final isSelected = isFrom
+                      ? station.code == state.fromStation?.code
+                      : station.code == state.toStation?.code;
+
+                  return ListTile(
+                    title: Text(station.name),
+                    subtitle: Text(station.city),
+                    trailing: isSelected
+                        ? const Icon(Icons.check)
+                        : null,
+                    onTap: () {
+                      final cubit = context.read<SearchCubit>();
+
+                      if (isFrom) {
+                        cubit.selectFromStation(station);
+                      } else {
+                        cubit.updateDestination(station);
+                      }
+
+                      Navigator.pop(context, station);
+                    },
+                  );
+                },
+              );
+            }
+
+            return const SizedBox();
+          },
         ),
       );
     },
   );
-}
-
-Future<List<Map<String, dynamic>>> getStationData() async {
-  final stations = FirebaseFirestore.instance.collection('stations');
-  final stationSnapshot = await stations.get();
-
-  print('count: ${stationSnapshot.docs.length}');
-
-  for (final doc in stationSnapshot.docs) {
-    print('id: ${doc.id} -> ${doc.data()}');
-  }
-
-  return stationSnapshot.docs.map((doc) => doc.data()).toList();
 }

@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ride_way_app/core/database/cache/cache_helper.dart';
+import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:ride_way_app/features/account/data/datasources/account_remote_data_source.dart';
 import 'package:ride_way_app/features/account/data/repositories/account_repository_impl.dart';
 import 'package:ride_way_app/features/account/domain/usecases/get_user_profile_usecase.dart';
 import 'package:ride_way_app/features/account/presentation/cubit/profile_cubit.dart';
 import 'package:ride_way_app/features/account/presentation/cubit/profile_state.dart';
+import 'package:ride_way_app/features/auth/presentation/presenter/bloc/auth_bloc.dart';
+import 'package:ride_way_app/features/search_and_discovery/data/models/add_trains.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final accountRemoteDataSource = AccountRemoteDataSourceImpl();
-    final accountRepository = AccountRepositoryImpl(
-      remoteDataSource: accountRemoteDataSource,
-    );
-    final getUserProfileUseCase = GetUserProfileUseCase(accountRepository);
-    final profileCubit = ProfileCubit(
-      getUserProfileUseCase: getUserProfileUseCase,
-    );
+    Color colorContainer = Theme.of(context).colorScheme.primaryContainer;
 
     return BlocProvider<ProfileCubit>(
-      create: (context) => profileCubit..loadProfile(),
+      create: (context) => sl<ProfileCubit>()..loadProfile(),
       child: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
           final cubit = context.read<ProfileCubit>();
@@ -33,7 +30,6 @@ class ProfileScreen extends StatelessWidget {
           return Directionality(
             textDirection: Directionality.of(context),
             child: Scaffold(
-              backgroundColor: kColorBackground,
               body: SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
@@ -48,8 +44,8 @@ class ProfileScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
+                            color: colorContainer,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.05),
@@ -67,10 +63,10 @@ class ProfileScreen extends StatelessWidget {
                                     label: 'User avatar',
                                     child: CircleAvatar(
                                       radius: 36,
-                                      backgroundColor: kColorBackground,
+                                      // backgroundColor: kColorBackground,
                                       child: const Icon(
                                         Icons.person,
-                                        color: kColorSubtitle,
+                                        // color: kColorSubtitle,
                                         size: 40,
                                       ),
                                     ),
@@ -93,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w700,
-                                                    color: kColorPrimaryAction,
+                                                    // color: kColorPrimaryAction,
                                                     fontFamily: 'ReadexPro',
                                                   ),
                                                 ),
@@ -101,13 +97,13 @@ class ProfileScreen extends StatelessWidget {
                                             ),
                                             const SizedBox(width: 8),
                                             Container(
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                horizontal: 8,
-                                                vertical: 4,
-                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 4,
+                                                  ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFFFBEFE3),
+                                                // color: const Color(0xFFFBEFE3),
                                                 borderRadius:
                                                     BorderRadius.circular(100),
                                               ),
@@ -117,8 +113,7 @@ class ProfileScreen extends StatelessWidget {
                                                   profile?.tier ?? 'Gold',
                                                   style: const TextStyle(
                                                     fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w600,
+                                                    fontWeight: FontWeight.w600,
                                                     color: kColorAccentGold,
                                                     fontFamily: 'Outfit',
                                                   ),
@@ -135,7 +130,7 @@ class ProfileScreen extends StatelessWidget {
                                                 'nasser.alharbi@mail.com',
                                             style: const TextStyle(
                                               fontSize: 13,
-                                              color: kColorSubtitle,
+                                              // color: kColorSubtitle,
                                               fontFamily: 'Outfit',
                                             ),
                                           ),
@@ -156,15 +151,18 @@ class ProfileScreen extends StatelessWidget {
                                                     (profile?.points ?? 12480)
                                                         .toString()
                                                         .replaceAllMapped(
-                                                            RegExp(
-                                                                r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                                                            (Match m) =>
-                                                                '${m[1]},'),
+                                                          RegExp(
+                                                            r'(\d{1,3})(?=(\d{3})+(?!\d))',
+                                                          ),
+                                                          (Match m) =>
+                                                              '${m[1]},',
+                                                        ),
                                                     style: const TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      color: kColorPrimaryAction,
+                                                      // color:
+                                                      //     kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -173,7 +171,7 @@ class ProfileScreen extends StatelessWidget {
                                                     'Points',
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      color: kColorSubtitle,
+                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -194,7 +192,8 @@ class ProfileScreen extends StatelessWidget {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      color: kColorPrimaryAction,
+                                                      // color:
+                                                      //     kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -203,7 +202,7 @@ class ProfileScreen extends StatelessWidget {
                                                     'Trips',
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      color: kColorSubtitle,
+                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -224,7 +223,8 @@ class ProfileScreen extends StatelessWidget {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      color: kColorPrimaryAction,
+                                                      // color:
+                                                      // kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -233,7 +233,7 @@ class ProfileScreen extends StatelessWidget {
                                                     'Since',
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      color: kColorSubtitle,
+                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -254,23 +254,27 @@ class ProfileScreen extends StatelessWidget {
                                   onPressed: () {
                                     context.push('/profile/edit');
                                   },
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.edit_outlined,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSecondary,
                                     size: 18,
                                   ),
-                                  label: const Text(
+                                  label: Text(
                                     'Edit profile',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Outfit',
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSecondary,
                                     ),
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    foregroundColor: kColorPrimaryAction,
-                                    side: const BorderSide(
-                                      color: kColorBorder,
-                                    ),
+                                    // foregroundColor: kColorPrimaryAction,
+                                    side: const BorderSide(color: kColorBorder),
                                     shape: const StadiumBorder(),
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 14,
@@ -285,10 +289,11 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       Semantics(
                         label: 'Account settings group',
+
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: colorContainer,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -349,7 +354,7 @@ class ProfileScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: colorContainer,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -384,8 +389,7 @@ class ProfileScreen extends StatelessWidget {
                                 icon: Icons.notifications_outlined,
                                 title: 'Trip notifications',
                                 value: state.notificationsEnabled,
-                                onChanged: (v) =>
-                                    cubit.toggleNotifications(v),
+                                onChanged: (v) => cubit.toggleNotifications(v),
                               ),
                               const Divider(
                                 height: 1,
@@ -408,7 +412,7 @@ class ProfileScreen extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: colorContainer,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -448,17 +452,51 @@ class ProfileScreen extends StatelessWidget {
                           onPressed: isLoading
                               ? null
                               : () {
-                                  showModalBottomSheet(
+                                  showGeneralDialog(
                                     context: context,
-                                    backgroundColor: Colors.transparent,
-                                    isScrollControlled: true,
-                                    builder: (ctx) => _LogoutBottomSheet(
-                                      onConfirm: () {
-                                        Navigator.pop(ctx);
-                                        cubit.logout();
-                                        context.go('/login');
-                                      },
+                                    barrierDismissible: true,
+                                    barrierLabel: 'Logout',
+                                    barrierColor: Colors.black54,
+                                    transitionDuration: const Duration(
+                                      milliseconds: 300,
                                     ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) {
+                                          return Center(
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: _LogoutDialog(
+                                                onConfirm: () async {
+                                                 await CacheHelper.clearData();
+                                                  context.go('/');
+                                                  // logout logic
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                    transitionBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                          child,
+                                        ) {
+                                          return ScaleTransition(
+                                            scale: CurvedAnimation(
+                                              parent: animation,
+                                              curve: Curves.easeOutBack,
+                                            ),
+                                            child: FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            ),
+                                          );
+                                        },
                                   );
                                 },
                           icon: const Icon(
@@ -479,9 +517,7 @@ class ProfileScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100),
-                              side: const BorderSide(
-                                color: Color(0xFFF5D7D2),
-                              ),
+                              side: const BorderSide(color: Color(0xFFF5D7D2)),
                             ),
                           ),
                         ),
@@ -501,6 +537,12 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     await seedTrains();
+                      //   },
+                      //   child: const Text('Show Model'),
+                      // ),
                     ],
                   ),
                 ),
@@ -546,11 +588,7 @@ class _SettingsTile extends StatelessWidget {
             child: Row(
               children: [
                 const SizedBox(width: 8),
-                Icon(
-                  icon,
-                  color: kColorPrimaryAction,
-                  size: 22,
-                ),
+                Icon(icon, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -558,7 +596,7 @@ class _SettingsTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: kColorPrimaryAction,
+                      // color: kColorPrimaryAction,
                       fontFamily: 'Outfit',
                     ),
                   ),
@@ -570,7 +608,7 @@ class _SettingsTile extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFBEFE3),
+                      // color: const Color(0xFFFBEFE3),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -587,11 +625,7 @@ class _SettingsTile extends StatelessWidget {
                   trailing!,
                 if (onTap != null) ...[
                   const SizedBox(width: 8),
-                  Icon(
-                    chevronIcon,
-                    size: 14,
-                    color: kColorSubtitle,
-                  ),
+                  Icon(chevronIcon, size: 14),
                 ],
                 const SizedBox(width: 12),
               ],
@@ -631,11 +665,7 @@ class _SwitchTile extends StatelessWidget {
             child: Row(
               children: [
                 const SizedBox(width: 8),
-                Icon(
-                  icon,
-                  color: kColorPrimaryAction,
-                  size: 22,
-                ),
+                Icon(icon, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -643,7 +673,7 @@ class _SwitchTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: kColorPrimaryAction,
+                      // color: kColorPrimaryAction,
                       fontFamily: 'Outfit',
                     ),
                   ),
@@ -657,8 +687,7 @@ class _SwitchTile extends StatelessWidget {
                     activeTrackColor: kColorAccentGold.withValues(alpha: 0.3),
                     inactiveThumbColor: Colors.white,
                     inactiveTrackColor: kColorBorder,
-                    materialTapTargetSize:
-                        MaterialTapTargetSize.shrinkWrap,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -671,8 +700,8 @@ class _SwitchTile extends StatelessWidget {
   }
 }
 
-class _LogoutBottomSheet extends StatelessWidget {
-  const _LogoutBottomSheet({required this.onConfirm});
+class _LogoutDialog extends StatelessWidget {
+  const _LogoutDialog({required this.onConfirm});
 
   final VoidCallback onConfirm;
 
@@ -681,11 +710,12 @@ class _LogoutBottomSheet extends StatelessWidget {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
-          .copyWith(bottom: bottomPadding + 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.black.withAlpha(55),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: kColorAccentGold),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -706,11 +736,7 @@ class _LogoutBottomSheet extends StatelessWidget {
               color: const Color(0xFFF5D7D2),
               borderRadius: BorderRadius.circular(100),
             ),
-            child: const Icon(
-              Icons.logout,
-              color: Color(0xFFC0392B),
-              size: 28,
-            ),
+            child: const Icon(Icons.logout, color: Color(0xFFC0392B), size: 28),
           ),
           const SizedBox(height: 20),
           const Text(
@@ -718,7 +744,7 @@ class _LogoutBottomSheet extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: kColorPrimaryAction,
+              // color: kColorPrimaryAction,
               fontFamily: 'ReadexPro',
             ),
           ),
@@ -739,22 +765,23 @@ class _LogoutBottomSheet extends StatelessWidget {
           const SizedBox(height: 28),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onConfirm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC0392B),
-                foregroundColor: Colors.white,
-                elevation: 0,
+            child: TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                backgroundColor: kColorAccentGold,
+
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
+                side: const BorderSide(color: kColorAccentGold),
               ),
-              child: const Text(
-                'Yes, log out',
+              child: Text(
+                'Cancel',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSecondary,
                   fontFamily: 'Outfit',
                 ),
               ),
@@ -763,21 +790,25 @@ class _LogoutBottomSheet extends StatelessWidget {
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
-            child: TextButton(
-              onPressed: () => Navigator.pop(context),
-              style: TextButton.styleFrom(
+            child: ElevatedButton(
+              onPressed: onConfirm,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                // foregroundColor: Colors.white,
+                elevation: 0,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
+                side: BorderSide(color: Colors.red.shade900),
               ),
-              child: const Text(
-                'Cancel',
+              child: Text(
+                'Yes, log out',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: kColorPrimaryAction,
                   fontFamily: 'Outfit',
+                  color: Colors.red.shade900,
                 ),
               ),
             ),

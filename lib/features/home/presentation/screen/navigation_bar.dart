@@ -27,6 +27,7 @@ class _NavigationBarState extends State<NavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kColorBackgroundnew,
       body: IndexedStack(index: currentIndex, children: screens),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
@@ -54,16 +55,17 @@ class _NavigationBarState extends State<NavigationBar> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.confirmation_number_outlined),
+                activeIcon: Icon(Icons.confirmation_number),
                 label: "My Tickets",
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_outlined),
-                activeIcon: Icon(Icons.confirmation_number),
+                activeIcon: Icon(Icons.notifications),
                 label: "Notification",
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                activeIcon: Icon(Icons.map),
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person),
                 label: "Profile",
               ),
             ],

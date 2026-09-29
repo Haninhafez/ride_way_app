@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/datasources/search_local_data_source.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/datasources/search_remote_data_source.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/repositories/search_repository_impl.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/get_recent_searches_usecase.dart';
-import 'package:ride_way_app/features/search_and_discovery/domain/usecases/get_saved_routes_usecase.dart';
-import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
+import 'package:ride_way_app/features/search/data/datasources/search_local_data_source.dart';
+import 'package:ride_way_app/features/search/data/datasources/search_remote_data_source.dart';
+import 'package:ride_way_app/features/search/data/repositories/search_repository_impl.dart';
+import 'package:ride_way_app/features/search/domain/usecases/get_recent_searches_usecase.dart';
+import 'package:ride_way_app/features/search/domain/usecases/get_saved_routes_usecase.dart';
+import 'package:ride_way_app/features/search/presentation/cubit/search_cubit.dart';
 
 void main() {
   late SearchCubit cubit;

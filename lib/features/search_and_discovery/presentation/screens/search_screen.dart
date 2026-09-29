@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ride_way_app/core/database/api/api_end_points.dart';
 import 'package:ride_way_app/core/database/cache/cache_helper.dart';
+import 'package:ride_way_app/features/search_and_discovery/data/models/add_trains.dart';
+import 'package:ride_way_app/features/search_and_discovery/domain/entities/station.dart';
 import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/header_row.dart';
@@ -35,10 +37,10 @@ class _SearchScreenState extends State<SearchScreen> {
       builder: (context, state) {
         final dateFormatted = DateFormat(
           'EEE, d MMM yyyy',
-        ).format(state.departureDate);
+        ).format(state.departureDate ?? DateTime.now());
 
         return Scaffold(
-          backgroundColor: isDark ? const Color(0xFF0F131A) : kColorBackground,
+          backgroundColor: isDark ? kColorBackgroundnew : kColorBackground,
           body: SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -93,8 +95,27 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                         // From / To Stacked Inputs with swap button
                         StationSwapInput(
-                          origin: state.originStation,
-                          destination: state.destinationStation,
+                          origin:
+                              state.fromStation ??
+                              Station(
+                                name: 'Dammam',
+                                city: 'Dammam',
+                                code: '',
+                                nameAr: '',
+                                lat: 5.4,
+                                lng: 85,
+                              ),
+                          destination:
+                              state.toStation ??
+                              Station(
+                                name: 'Laini',
+                                city: 'laini',
+                                code: '',
+                                nameAr: '',
+                                lat: 5.4,
+                                lng: 85,
+                              ),
+
                           onSwap: () {
                             context.read<SearchCubit>().swapStations();
                           },
@@ -252,32 +273,32 @@ class _SearchScreenState extends State<SearchScreen> {
                   const SizedBox(height: 28),
 
                   // Recent Searches Section
-                  RecentSearchesWidget(
-                    recentSearches: state.recentSearches,
-                    onClear: () {
-                      context.read<SearchCubit>().clearRecentSearches();
-                    },
-                    onSelect: (recent) {
-                      context.read<SearchCubit>().applyRecentSearch(recent);
-                      context.push(
-                        '/train-list',
-                        extra: context.read<SearchCubit>().state.searchQuery,
-                      );
-                    },
-                  ),
+                  // RecentSearchesWidget(
+                  //   recentSearches: state.recentSearches,
+                  //   onClear: () {
+                  //     context.read<SearchCubit>().clearRecentSearches();
+                  //   },
+                  //   onSelect: (recent) {
+                  //     context.read<SearchCubit>().applyRecentSearch(recent);
+                  //     context.push(
+                  //       '/train-list',
+                  //       extra: context.read<SearchCubit>().state.searchQuery,
+                  //     );
+                  //   },
+                  // ),
                   const SizedBox(height: 24),
 
                   // Saved Routes Section
-                  SavedRoutesWidget(
-                    savedRoutes: state.savedRoutes,
-                    onSelect: (saved) {
-                      context.read<SearchCubit>().applySavedRoute(saved);
-                      context.push(
-                        '/train-list',
-                        extra: context.read<SearchCubit>().state.searchQuery,
-                      );
-                    },
-                  ),
+                  // SavedRoutesWidget(
+                  //   savedRoutes: state.savedRoutes,
+                  //   onSelect: (saved) {
+                  //     context.read<SearchCubit>().applySavedRoute(saved);
+                  //     context.push(
+                  //       '/train-list',
+                  //       extra: context.read<SearchCubit>().state.searchQuery,
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

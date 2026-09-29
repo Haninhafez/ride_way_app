@@ -21,10 +21,10 @@ const KColorDarkGrey = Color(0xff262626);
 
 ThemeData darkTheme = ThemeData(
   useMaterial3: false,
-  scaffoldBackgroundColor: const Color(0xFF0F131A),
+  scaffoldBackgroundColor: kColorBackgroundnew,
   primaryColor: kColorPrimaryAction,
-  colorScheme: const ColorScheme.dark(
-    primaryContainer: Color(0xFF1C1C1E),
+  colorScheme: ColorScheme.dark(
+    primaryContainer: Colors.grey.withAlpha(15),
     primary: kColorPrimaryAction,
     surface: Color(0xFF2C2C2E),
     onSurface: Color(0xFFAEAEB2),

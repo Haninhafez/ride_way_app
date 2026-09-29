@@ -1,7 +1,9 @@
 import 'dart:ui' as ui;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ride_way_app/features/home/presentation/widgets/show_model_bottom_sheet.dart';
+import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
 import '../../domain/entities/station.dart';
 import '../../../../core/themes/theme_data.dart';
 
@@ -24,6 +26,7 @@ class StationSwapInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final searchState = context.watch<SearchCubit>().state;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -41,13 +44,13 @@ class StationSwapInput extends StatelessWidget {
             children: [
               // From Field
               GestureDetector(
-                onTap:(){
-                  showModelBottomSheet(context);
+                onTap: () {
+                  showModelBottomSheet(context, isFrom: true);
                 },
                 child: _buildStationRow(
                   context: context,
                   label: 'search.from'.tr(),
-                  station: origin,
+                  station: searchState.fromStation,
                   isDark: isDark,
                 ),
               ),
@@ -55,11 +58,16 @@ class StationSwapInput extends StatelessWidget {
               const Divider(height: 1),
               const SizedBox(height: 8),
               // To Field
-              _buildStationRow(
-                context: context,
-                label: 'search.to'.tr(),
-                station: destination,
-                isDark: isDark,
+              GestureDetector(
+                onTap: () {
+                  showModelBottomSheet(context, isFrom: false);
+                },
+                child: _buildStationRow(
+                  context: context,
+                  label: 'search.to'.tr(),
+                  station: searchState.toStation,
+                  isDark: isDark,
+                ),
               ),
             ],
           ),
@@ -107,7 +115,7 @@ class StationSwapInput extends StatelessWidget {
   Widget _buildStationRow({
     required BuildContext context,
     required String label,
-    required Station station,
+    required Station? station,
     required bool isDark,
   }) {
     return Row(
@@ -134,7 +142,7 @@ class StationSwapInput extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                station.name,
+                station?.name ?? 'search.select_station'.tr(),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -145,25 +153,28 @@ class StationSwapInput extends StatelessWidget {
           ),
         ),
         // Enforce strictly LTR format for station codes (e.g., "DMM", "JED") across both English & Arabic locales
-        Directionality(
-          textDirection: ui.TextDirection.ltr,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: kColorAccentGold.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              station.stationCode,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: kColorAccentGold,
+        if (station != null) ...[
+          Directionality(
+            textDirection: ui.TextDirection.ltr,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: kColorAccentGold.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                station.code,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: kColorAccentGold,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(width: 44), // Space for floating swap button
+        ],
+
+        const SizedBox(width: 44),
       ],
     );
   }
