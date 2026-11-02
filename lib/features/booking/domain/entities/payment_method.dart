@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 enum PaymentMethodType {
-  mada,
-  applePay,
+
+  vodafoneCash,
   creditCard,
   cashAtStation,
 }

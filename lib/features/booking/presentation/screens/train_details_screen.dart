@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,28 +24,15 @@ class TrainDetailsScreen extends StatefulWidget {
 
 class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
   @override
-  void initState() {
-    super.initState();
-    final cubit = context.read<BookingCubit>();
-    if (cubit.state.trainDetail == null) {
-      cubit.loadTrainDetails(widget.trainId);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocConsumer<BookingCubit, BookingState>(
       listener: (context, state) {
-        if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
-        }
       },
       builder: (context, state) {
         final train = state.trainDetail;
+        log('train in train details screen=$train');
 
         if (state.status == BookingStatus.loading && train == null) {
           return Scaffold(
@@ -52,7 +41,7 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
               elevation: 0,
             ),
             body: const Center(
-              child: CircularProgressIndicator(color: kColorPrimaryAction),
+              child: CircularProgressIndicator(color: kColorAccentGold),
             ),
           );
         }
@@ -89,7 +78,6 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
           ),
           body: Column(
             children: [
-              // Scrollable Content area
               Expanded(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -97,19 +85,15 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header / Status Card
                       _buildHeaderCard(context, train, isDark),
                       const SizedBox(height: 20),
 
-                      // Amenities List
                       AmenitiesList(amenities: train.amenities),
                       const SizedBox(height: 24),
 
-                      // Route & Stops Section
                       RouteTimeline(stops: train.stops),
                       const SizedBox(height: 24),
 
-                      // Class Selection Section ("Choose a class")
                       Text(
                         'booking.choose_class'.tr(),
                         style: TextStyle(
@@ -136,7 +120,6 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
                 ),
               ),
 
-              // Sticky Bottom Action Bar
               StickyBottomActionBar(
                 title: 'SAR ${totalCalc.toStringAsFixed(0)}',
                 subtitle:
@@ -161,7 +144,7 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -169,7 +152,6 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
       ),
       child: Column(
         children: [
-          // Top Row: Train code & Status pill
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -204,14 +186,13 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
                   ),
                 ],
               ),
-              // Status Pill
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: kColorSuccess.withOpacity(0.12),
+                  color: kColorSuccess.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
@@ -239,7 +220,6 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
           const Divider(height: 1),
           const SizedBox(height: 20),
 
-          // Departure / Station / Arrival Layout
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -266,7 +246,6 @@ class _TrainDetailsScreenState extends State<TrainDetailsScreen> {
                 ],
               ),
 
-              // Train path line with duration
               Column(
                 children: [
                   Text(

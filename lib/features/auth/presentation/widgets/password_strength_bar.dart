@@ -3,10 +3,6 @@ import 'package:ride_way_app/core/themes/theme_data.dart';
 
 enum PasswordStrength { none, weak, medium, strong }
 
-/// 3-segment animated password strength bar with a label.
-///
-/// Segments light up progressively: red → amber → green.
-/// The [strength] value drives animation via [AnimatedContainer].
 class PasswordStrengthBar extends StatelessWidget {
   const PasswordStrengthBar({
     super.key,

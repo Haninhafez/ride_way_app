@@ -1,4 +1,9 @@
+import 'dart:ui';
+
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ride_way_app/features/account/domain/entities/user_profile.dart';
 import '../../domain/usecases/get_user_profile_usecase.dart';
 import 'profile_state.dart';
 
@@ -33,10 +38,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(darkModeEnabled: value));
   }
 
-  void setLanguage(String language) {
-    emit(state.copyWith(selectedLanguage: language));
-  }
+Future<void> setLanguage(String language,BuildContext context) async {
+  final locale = language == 'Arabic'
+      ? const Locale('ar')
+      : const Locale('en');
 
+  await context.setLocale(locale);
+
+  emit(state.copyWith(selectedLanguage: language));
+}
   void toggleLogoutConfirm() {
     emit(state.copyWith(showLogoutConfirm: !state.showLogoutConfirm));
   }
@@ -52,4 +62,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       ));
     }
   }
+  void updateProfile(UserProfile profile) {
+emit(state.copyWith(
+    status: ProfileStatus.loaded,
+    profile: profile,
+  ));
+}
 }

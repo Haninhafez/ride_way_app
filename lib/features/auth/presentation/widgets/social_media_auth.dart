@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ride_way_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:ride_way_app/features/auth/presentation/widgets/social_button.dart';
 
 class SocialMediaAuth extends StatelessWidget {

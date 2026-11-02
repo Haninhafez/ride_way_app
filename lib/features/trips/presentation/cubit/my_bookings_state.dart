@@ -6,7 +6,7 @@ enum MyBookingsStatus { initial, loading, success, error }
 class MyBookingsState extends Equatable {
   final MyBookingsStatus status;
   final List<Booking> allBookings;
-  final int selectedTabIndex; // 0: upcoming, 1: completed, 2: cancelled
+  final int selectedTabIndex; 
   final String? errorMessage;
 
   const MyBookingsState({

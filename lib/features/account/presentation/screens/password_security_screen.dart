@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:ride_way_app/features/account/data/datasources/account_remote_data_source.dart';
 import 'package:ride_way_app/features/account/data/repositories/account_repository_impl.dart';
@@ -24,18 +25,8 @@ class PasswordSecurityScreen extends StatefulWidget {
 class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
   @override
   Widget build(BuildContext context) {
-    final AccountRemoteDataSource remoteDataSource =
-        AccountRemoteDataSourceImpl();
-    final AccountRepository accountRepository =
-        AccountRepositoryImpl(remoteDataSource: remoteDataSource);
-    final ChangePasswordUseCase changePasswordUseCase =
-        ChangePasswordUseCase(accountRepository);
-
     return BlocProvider(
-      create: (_) => PasswordSecurityCubit(
-        changePasswordUseCase: changePasswordUseCase,
-        accountRepository: accountRepository,
-      )..loadLastChangedInfo(),
+      create: (_) => sl<PasswordSecurityCubit>()..loadLastChangedInfo(),
       child: Builder(
         builder: (context) {
           final cubit = context.read<PasswordSecurityCubit>();
@@ -118,8 +109,10 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            BlocBuilder<PasswordSecurityCubit,
-                                ps.PasswordSecurityState>(
+                            BlocBuilder<
+                              PasswordSecurityCubit,
+                              ps.PasswordSecurityState
+                            >(
                               builder: (context, state) {
                                 return CustomTextField(
                                   hint: 'Enter current password',
@@ -141,8 +134,10 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                               },
                             ),
                             const SizedBox(height: 16),
-                            BlocBuilder<PasswordSecurityCubit,
-                                ps.PasswordSecurityState>(
+                            BlocBuilder<
+                              PasswordSecurityCubit,
+                              ps.PasswordSecurityState
+                            >(
                               builder: (context, state) {
                                 return CustomTextField(
                                   hint: 'Create new password',
@@ -164,8 +159,10 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                               },
                             ),
                             const SizedBox(height: 16),
-                            BlocBuilder<PasswordSecurityCubit,
-                                ps.PasswordSecurityState>(
+                            BlocBuilder<
+                              PasswordSecurityCubit,
+                              ps.PasswordSecurityState
+                            >(
                               builder: (context, state) {
                                 return CustomTextField(
                                   hint: 'Re-enter new password',
@@ -231,8 +228,10 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            BlocBuilder<PasswordSecurityCubit,
-                                ps.PasswordSecurityState>(
+                            BlocBuilder<
+                              PasswordSecurityCubit,
+                              ps.PasswordSecurityState
+                            >(
                               builder: (context, state) {
                                 pw.PasswordStrength mappedStrength;
                                 switch (state.passwordStrength) {
@@ -250,7 +249,8 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                                     break;
                                 }
                                 return pw.PasswordStrengthBar(
-                                    strength: mappedStrength);
+                                  strength: mappedStrength,
+                                );
                               },
                             ),
                             const SizedBox(height: 16),
@@ -263,8 +263,10 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            BlocBuilder<PasswordSecurityCubit,
-                                ps.PasswordSecurityState>(
+                            BlocBuilder<
+                              PasswordSecurityCubit,
+                              ps.PasswordSecurityState
+                            >(
                               builder: (context, state) {
                                 return Column(
                                   children: [
@@ -306,34 +308,38 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: BlocBuilder<PasswordSecurityCubit,
-                                  ps.PasswordSecurityState>(
-                                builder: (context, state) {
-                                  return RichText(
-                                    text: TextSpan(
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF3A4A22),
-                                        height: 1.4,
-                                        fontFamily: 'San-Francisco-Pro',
-                                      ),
-                                      children: [
-                                        const TextSpan(
-                                          text: 'Security',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
+                              child:
+                                  BlocBuilder<
+                                    PasswordSecurityCubit,
+                                    ps.PasswordSecurityState
+                                  >(
+                                    builder: (context, state) {
+                                      return RichText(
+                                        text: TextSpan(
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Color(0xFF3A4A22),
+                                            height: 1.4,
+                                            fontFamily: 'San-Francisco-Pro',
                                           ),
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Security',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const TextSpan(text: '  '),
+                                            TextSpan(
+                                              text:
+                                                  state.lastChangedInfo ??
+                                                  'Last changed 4 months ago from Riyadh, SA. Enable two-factor login in Help & support for extra protection.',
+                                            ),
+                                          ],
                                         ),
-                                        const TextSpan(text: '  '),
-                                        TextSpan(
-                                          text: state.lastChangedInfo ??
-                                              'Last changed 4 months ago from Riyadh, SA. Enable two-factor login in Help & support for extra protection.',
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                                      );
+                                    },
+                                  ),
                             ),
                           ],
                         ),
@@ -367,17 +373,21 @@ class _PasswordSecurityScreenState extends State<PasswordSecurityScreen> {
                         ),
                       ],
                     ),
-                    child: BlocBuilder<PasswordSecurityCubit,
-                        ps.PasswordSecurityState>(
-                      builder: (context, state) {
-                        return PrimaryButton(
-                          label: 'Update password',
-                          onTap: cubit.updatePassword,
-                          isLoading:
-                              state.status == ps.PasswordSecurityStatus.updating,
-                        );
-                      },
-                    ),
+                    child:
+                        BlocBuilder<
+                          PasswordSecurityCubit,
+                          ps.PasswordSecurityState
+                        >(
+                          builder: (context, state) {
+                            return PrimaryButton(
+                              label: 'Update password',
+                              onTap: cubit.updatePassword,
+                              isLoading:
+                                  state.status ==
+                                  ps.PasswordSecurityStatus.updating,
+                            );
+                          },
+                        ),
                   ),
                 ),
               ],

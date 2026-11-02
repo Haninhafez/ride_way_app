@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/database/api/api_end_points.dart';
 import 'package:ride_way_app/core/database/cache/cache_helper.dart';
 import 'package:ride_way_app/core/error/api_error_handler.dart';
@@ -37,8 +36,10 @@ class AuthDataSource {
       if (response.statusCode == 200) {
         final user = UserModel.fromJson(response.data);
         isUserExists(user);
+
         CacheHelper.saveData(key: ApiKeys.firstName, value: user.firstName);
         CacheHelper.saveData(key: ApiKeys.lastName, value: user.lastName);
+        CacheHelper.saveData(key: ApiKeys.email, value: user.email);
         return UserModel.fromJson(user.toJson());
       }
       throw ServerException();
@@ -67,6 +68,10 @@ class AuthDataSource {
       if (response.statusCode == 200) {
         final user = UserModel.fromJson(response.data);
         await firestore.collection('users').doc(user.id).set(user.toJson());
+
+        CacheHelper.saveData(key: ApiKeys.firstName, value: user.firstName);
+        CacheHelper.saveData(key: ApiKeys.lastName, value: user.lastName);
+        CacheHelper.saveData(key: ApiKeys.email, value: user.email);
         return UserModel.fromJson(user.toJson());
       }
       throw ServerException();

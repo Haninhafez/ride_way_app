@@ -10,9 +10,6 @@ class BackGroundAuth extends StatelessWidget {
     return Container(
       height: double.infinity,
       decoration: BoxDecoration(
-        // image: DecorationImage(
-        //   image: AssetImage('assets/images/app_images/train.jpg'),
-        // ),
         gradient: LinearGradient(
           colors: [Colors.black87, Colors.black38, Colors.black],
           tileMode: TileMode.decal,

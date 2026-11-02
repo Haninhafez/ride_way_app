@@ -1,89 +1,65 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dartz/dartz.dart';
-import 'package:ride_way_app/core/error/failures.dart';
 
 import '../models/station_dto.dart';
 import '../models/train_search_result_dto.dart';
 
 abstract class SearchRemoteDataSource {
-  Future<Either<Failure, List<StationDTO>>> fetchStations();
-  Future<Either<Failure, List<TrainSearchResultDTO>>> fetchTrains({
+  Future<List<StationDTO>> fetchStations();
+
+  Future<List<TrainSearchResultDTO>> fetchTrains({
     required String originCode,
     required String destinationCode,
     required DateTime date,
   });
- 
 }
 
 class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   final FirebaseFirestore firestore;
 
-SearchRemoteDataSourceImpl({
-  required this.firestore,
-});
+  SearchRemoteDataSourceImpl({required this.firestore});
 
-@override
-Future<Either<Failure, List<StationDTO>>> fetchStations() async {
-  try {
-    final snapshot = await firestore
-        .collection('stations')
-        .get();
-
-    final stations = snapshot.docs
-        .map(
-          (doc) => StationDTO.fromFirestore(
-            doc.data(),
-          ),
-        )
-        .toList();
-
-    return Right(stations);
-  } on FirebaseException catch (e) {
-    return Left(
-      ServerFailure(e.message ?? 'Firebase error'),
-    );
-  } catch (e) {
-    return Left(
-      ServerFailure(e.toString()),
-    );
-  }
-}
 
   @override
-  Future<Either<Failure, List<TrainSearchResultDTO>>> fetchTrains({
-  required String originCode,
-  required String destinationCode,
-  required DateTime date,
-}) async {
-  try {
+  Future<List<StationDTO>> fetchStations() async {
+    final snapshot = await firestore.collection('stations').get();
+
+    final stations = snapshot.docs.map((doc) {
+      return StationDTO.fromFirestore(doc.id, doc.data());
+    }).toList();
+
+    log('[SearchRemoteDataSource] fetchStations → ${stations.length} stations');
+    return stations;
+  }
+
+
+  @override
+  Future<List<TrainSearchResultDTO>> fetchTrains({
+    required String originCode,
+    required String destinationCode,
+    required DateTime date,
+  }) async {
     final dateString =
         '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
     final snapshot = await firestore
-        .collection('trains')
-        .where('originCode', isEqualTo: originCode)
-        .where('destinationCode', isEqualTo: destinationCode)
-        .where('departureDate', isEqualTo: dateString)
+        .collection('trips')
+        .where('fromStationCode', isEqualTo: originCode)
+        .where('toStationCode', isEqualTo: destinationCode)
+        .where('date', isEqualTo: dateString)
         .get();
 
-    final trains = snapshot.docs
-        .map(
-          (doc) => TrainSearchResultDTO.fromFirestore(
-            doc.id,
-            doc.data(),
-          ),
-        )
-        .toList();
+    final trains = snapshot.docs.map((doc) {
+      return TrainSearchResultDTO.fromFirestore(doc.id, doc.data());
+    }).toList();
+    log('trains=$trains');
 
-    return Right(trains);
-  } on FirebaseException catch (e) {
-    return Left(
-      ServerFailure(e.message ?? 'Firebase error'),
+    log(
+      '[SearchRemoteDataSource] fetchTrains($originCode→$destinationCode, $dateString) '
+      '→ ${trains.length} trips',
     );
-  } catch (e) {
-    return Left(
-      ServerFailure(e.toString()),
-    );
+
+    return trains;
   }
-}
 }

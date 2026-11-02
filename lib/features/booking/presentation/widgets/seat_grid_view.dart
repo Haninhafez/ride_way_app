@@ -1,25 +1,29 @@
 import 'dart:ui' as ui;
+import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../domain/entities/passenger.dart';
 import '../../domain/entities/seat.dart';
+import '../../domain/entities/travel_class.dart';
 import '../../../../core/themes/theme_data.dart';
 
 class SeatGridView extends StatelessWidget {
-  final String selectedCoach;
+  final List<TravelClass> classes;
+  final String selectedClassId;
   final List<Seat> seats;
   final List<Seat> selectedSeats;
   final List<Passenger> passengers;
-  final ValueChanged<String> onCoachSelected;
+  final ValueChanged<TravelClass> onClassSelected;
   final ValueChanged<Seat> onSeatTapped;
 
   const SeatGridView({
     super.key,
-    required this.selectedCoach,
+    required this.classes,
+    required this.selectedClassId,
     required this.seats,
     required this.selectedSeats,
     required this.passengers,
-    required this.onCoachSelected,
+    required this.onClassSelected,
     required this.onSeatTapped,
   });
 
@@ -27,104 +31,127 @@ class SeatGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final coaches = [
-      {'number': '1', 'title': 'Coach 1 - First', 'avail': '2 left'},
-      {'number': '3', 'title': 'Coach 3 - Business', 'avail': '6 left'},
-      {'number': '6', 'title': 'Coach 6 - Economy', 'avail': '14 left'},
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Coach selection horizontal pills
         SizedBox(
-          height: 44,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: coaches.length,
-            itemBuilder: (context, index) {
-              final coach = coaches[index];
-              final isCoachSelected = coach['number'] == selectedCoach;
-
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  selected: isCoachSelected,
-                  label: Text('${coach['title']} (${coach['avail']})'),
-                  labelStyle: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: isCoachSelected
-                        ? Colors.white
-                        : (isDark ? Colors.white70 : kColorPrimaryAction),
-                  ),
-                  backgroundColor:
-                      isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
-                  selectedColor: kColorPrimaryAction,
-                  checkmarkColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  onSelected: (_) => onCoachSelected(coach['number']!),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Passenger Seat Assignment Chips
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
-            ),
-          ),
+          height: 55,
           child: Row(
             children: [
-              const Icon(Icons.person_pin, size: 20, color: kColorAccentGold),
-              const SizedBox(width: 8),
+              Container(
+                width: 70,
+
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(40)),
+                  border: Border.all(color: kColorSubtitleold, width: 1.5),
+                ),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    width: 30,
+                    height: 15,
+                    margin: const EdgeInsets.only(top: 6, left: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: kColorAccentGold, width: 1.5),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
               Expanded(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: passengers.map((p) {
-                    final seatLabel = p.assignedSeat?.seatNumber ?? '---';
-                    return Chip(
-                      avatar: CircleAvatar(
-                        backgroundColor: kColorAccentGold.withOpacity(0.2),
-                        child: Text(
-                          '${p.index}',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: kColorAccentGold,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: classes.length,
+                  itemBuilder: (context, index) {
+                    final travelClass = classes[index];
+                    final isClassSelected = travelClass.id == selectedClassId;
+                    final soldOut = travelClass.availableSeats == 0;
+
+                    final carLabel = 'Car ${index + 1}';
+
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: GestureDetector(
+                        onTap: soldOut
+                            ? null
+                            : () => onClassSelected(travelClass),
+                        child: CustomPaint(
+                          painter: soldOut
+                              ? DashedBorderPainter(
+                                  color: const Color(0xFF48484A),
+                                  borderRadius: 16,
+                                )
+                              : null,
+                          child: Container(
+                            width: 72,
+                            height: 52,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isClassSelected
+                                  ? kColorAccentGold.withAlpha(15)
+                                  : (soldOut
+                                        ? Colors.transparent
+                                        : const Color(
+                                            0xFF2C2C2E,
+                                          ).withAlpha(15)),
+                              borderRadius: BorderRadius.circular(16),
+                              border: isClassSelected
+                                  ? Border.all(
+                                      color: kColorAccentGold,
+                                      width: 1.5,
+                                    )
+                                  : null,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  carLabel,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: soldOut
+                                        ? const Color(0xFF636366)
+                                        : Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  travelClass.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: isClassSelected
+                                        ? kColorAccentGold
+                                        : const Color(0xFF8E8E93),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      label: Text(
-                        '${p.fullName}: $seatLabel',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      backgroundColor:
-                          isDark ? const Color(0xFF2C2C2E) : const Color(0xFFF2F2F7),
                     );
-                  }).toList(),
+                  },
                 ),
               ),
             ],
           ),
         ),
+
         const SizedBox(height: 20),
 
-        // Seat Legend
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -138,7 +165,7 @@ class SeatGridView extends StatelessWidget {
               context: context,
               color: kColorPrimaryAction,
               label: 'booking.seat_selection.selected'.tr(),
-              textColor: Colors.white,
+              textColor: Colors.black,
             ),
             _buildLegendItem(
               context: context,
@@ -157,7 +184,6 @@ class SeatGridView extends StatelessWidget {
         ),
         const SizedBox(height: 24),
 
-        // Front Train Indicator
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -184,14 +210,21 @@ class SeatGridView extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // Seat Map Layout
-        // Enforce TextDirection.ltr so seat letters A-D stay left-to-right matching train coach convention!
-        Directionality(
-          textDirection: ui.TextDirection.ltr,
-          child: Column(
-            children: _buildSeatRows(context),
+        if (seats.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                'No seats available in this class.',
+                style: TextStyle(color: kColorSubtitle),
+              ),
+            ),
+          )
+        else
+          Directionality(
+            textDirection: ui.TextDirection.ltr,
+            child: Column(children: _buildSeatRows(context)),
           ),
-        ),
       ],
     );
   }
@@ -215,9 +248,7 @@ class SeatGridView extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             border: Border.all(color: borderColor ?? Colors.transparent),
           ),
-          child: icon != null
-              ? Icon(icon, size: 14, color: iconColor)
-              : null,
+          child: icon != null ? Icon(icon, size: 14, color: iconColor) : null,
         ),
         const SizedBox(width: 6),
         Text(
@@ -229,46 +260,33 @@ class SeatGridView extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ); 
   }
 
   List<Widget> _buildSeatRows(BuildContext context) {
     final Map<int, List<Seat>> seatRows = {};
     for (final seat in seats) {
-      final rowNum = int.tryParse(seat.seatNumber.replaceAll(RegExp(r'[^0-9]'), '')) ?? 1;
-      seatRows.putIfAbsent(rowNum, () => []).add(seat);
+      if (seat.rowKey > 0) {
+        seatRows.putIfAbsent(seat.rowKey, () => []).add(seat);
+      }
     }
 
     final sortedRowKeys = seatRows.keys.toList()..sort();
 
     return sortedRowKeys.map((rowKey) {
       final rowSeats = seatRows[rowKey]!;
-      Seat? seatA = rowSeats.cast<Seat?>().firstWhere(
-            (s) => s?.seatNumber.endsWith('A') ?? false,
-            orElse: () => null,
-          );
-      Seat? seatB = rowSeats.cast<Seat?>().firstWhere(
-            (s) => s?.seatNumber.endsWith('B') ?? false,
-            orElse: () => null,
-          );
-      Seat? seatC = rowSeats.cast<Seat?>().firstWhere(
-            (s) => s?.seatNumber.endsWith('C') ?? false,
-            orElse: () => null,
-          );
-      Seat? seatD = rowSeats.cast<Seat?>().firstWhere(
-            (s) => s?.seatNumber.endsWith('D') ?? false,
-            orElse: () => null,
-          );
+
+      Seat? seatIn(String col) =>
+          rowSeats.where((s) => s.column == col).firstOrNull;
 
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildSeatButton(context, seatA, '$rowKey A'),
+            _buildSeatButton(context, seatIn('A')),
             const SizedBox(width: 6),
-            _buildSeatButton(context, seatB, '$rowKey B'),
-            // Train Aisle Space
+            _buildSeatButton(context, seatIn('B')),
             SizedBox(
               width: 36,
               child: Center(
@@ -282,22 +300,24 @@ class SeatGridView extends StatelessWidget {
                 ),
               ),
             ),
-            _buildSeatButton(context, seatC, '$rowKey C'),
+            _buildSeatButton(context, seatIn('C')),
             const SizedBox(width: 6),
-            _buildSeatButton(context, seatD, '$rowKey D'),
+            _buildSeatButton(context, seatIn('D')),
           ],
         ),
       );
     }).toList();
   }
 
-  Widget _buildSeatButton(BuildContext context, Seat? seat, String fallbackNum) {
+  Widget _buildSeatButton(BuildContext context, Seat? seat) {
     if (seat == null) {
       return const SizedBox(width: 48, height: 48);
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isSelected = selectedSeats.any((s) => s.seatNumber == seat.seatNumber);
+    final isSelected = selectedSeats.any(
+      (s) => s.seatNumber == seat.seatNumber,
+    );
     final isOccupied = seat.isOccupied;
 
     Color bg;
@@ -319,11 +339,12 @@ class SeatGridView extends StatelessWidget {
     }
 
     return Semantics(
-      label: 'Seat ${seat.seatNumber}, ${isOccupied ? "Occupied" : (isSelected ? "Selected" : "Available")}',
+      label:
+          'Seat ${seat.seatNumber}, ${isOccupied ? "Occupied" : (isSelected ? "Selected" : "Available")}',
       button: true,
       enabled: !isOccupied,
       child: GestureDetector(
-        onTap: () => onSeatTapped(seat),
+        onTap: isOccupied ? null : () => onSeatTapped(seat),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           width: 48,
@@ -335,7 +356,7 @@ class SeatGridView extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
+                      color: Colors.black.withValues(alpha: 0.15),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -345,27 +366,79 @@ class SeatGridView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (seat.isAccessible)
+              Text(
+                seat.seatNumber,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+              if (seat.isAccessible) ...[
+                const SizedBox(height: 2),
                 Icon(
                   Icons.accessible,
-                  size: 14,
+                  size: 12,
                   color: isSelected
                       ? Colors.white
                       : (isOccupied ? textColor : kColorAccentGold),
-                )
-              else
-                Text(
-                  seat.seatNumber,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
                 ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class DashedBorderPainter extends CustomPainter {
+  final Color color;
+  final double borderRadius;
+  final double strokeWidth;
+  final double dashWidth;
+  final double dashSpace;
+
+  DashedBorderPainter({
+    required this.color,
+    this.borderRadius = 16,
+    this.strokeWidth = 1.2,
+    this.dashWidth = 5,
+    this.dashSpace = 3,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    final RRect rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Radius.circular(borderRadius),
+    );
+
+    final Path path = Path()..addRRect(rrect);
+    final Path dashPath = Path();
+
+    for (final PathMetric metric in path.computeMetrics()) {
+      double distance = 0.0;
+      while (distance < metric.length) {
+        dashPath.addPath(
+          metric.extractPath(distance, distance + dashWidth),
+          Offset.zero,
+        );
+        distance += dashWidth + dashSpace;
+      }
+    }
+
+    canvas.drawPath(dashPath, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant DashedBorderPainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.borderRadius != borderRadius;
   }
 }

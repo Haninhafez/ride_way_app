@@ -1,3 +1,4 @@
+
 import '../entities/train_detail.dart';
 import '../entities/travel_class.dart';
 import '../entities/seat.dart';
@@ -7,7 +8,12 @@ import '../entities/payment_method.dart';
 
 abstract class BookingRepository {
   Future<TrainDetail> getTrainDetails(String trainId);
-  Future<List<Seat>> getSeatsForCoach(String trainId, String coachNumber);
+  Future<List<Seat>> getSeatsForCoach(
+    String trainId,
+    String coachNumber,
+    String classId, {
+    double classPrice = 0.0,
+  });
   Future<BookingSummary> calculateBookingSummary({
     required TravelClass selectedClass,
     required List<Seat> selectedSeats,
@@ -22,5 +28,12 @@ abstract class BookingRepository {
     required BookingSummary summary,
     required PaymentMethod paymentMethod,
     String? cvv,
+  });
+  Future<String> bookingTicket({
+    required TrainDetail train,
+    required TravelClass selectedClass,
+    required int passangers,
+   required String selectedCoachNumber,
+   required BookingSummary booking,
   });
 }

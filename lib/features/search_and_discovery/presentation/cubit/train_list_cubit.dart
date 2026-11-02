@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/search_query.dart';
+import '../../domain/entities/train_search_result.dart';
 import '../../domain/usecases/filter_and_sort_trains_usecase.dart';
 import '../../domain/usecases/search_trains_usecase.dart';
 import 'train_list_state.dart';
@@ -23,6 +24,7 @@ class TrainListCubit extends Cubit<TrainListState> {
     );
 
     final results = await searchTrainsUseCase.execute(query);
+    if (isClosed) return;
 
     results.fold(
       (failure) {
@@ -34,11 +36,21 @@ class TrainListCubit extends Cubit<TrainListState> {
         );
       },
       (trains) {
+        final sorted = List<TrainSearchResult>.from(trains)
+          ..sort((a, b) => a.departureTime.compareTo(b.departureTime));
+
         emit(
           state.copyWith(
-            status: TrainListStatus.success,
-            allTrains: trains,
-            filteredTrains: trains,
+            status: sorted.isEmpty
+                ? TrainListStatus.empty
+                : TrainListStatus.success,
+            query: query,
+            selectedDate: query.departureDate,
+            allTrains: sorted,
+            filteredTrains: sorted,
+            maxPriceFilter: null,
+            sortBy: 'earliest',
+            errorMessage: null,
           ),
         );
       },
@@ -46,7 +58,7 @@ class TrainListCubit extends Cubit<TrainListState> {
   }
 
   Future<void> changeDate(DateTime newDate) async {
-    if (state.query == null) return;
+    if (state.query == null || isClosed) return;
 
     final updatedQuery = state.query!.copyWith(departureDate: newDate);
 

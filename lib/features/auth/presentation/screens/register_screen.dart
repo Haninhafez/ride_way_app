@@ -53,7 +53,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Split full name into first/last for the existing BLoC event
     final parts = _firstNameController.text.trim().split(' ');
     final firstName = parts.first;
     final lastName = _lastNameController.text.trim();
@@ -103,14 +102,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ── Header with back button ───────────────
                             AuthHeader(
                               showBackButton: true,
                               onBack: () => context.pop(),
                             ),
                             const SizedBox(height: 28),
 
-                            // ── Card ──────────────────────────────────
                             Container(
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
@@ -125,14 +122,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ],
                                 border: Border.all(
                                   color: const Color.fromARGB(125, 0, 0, 0),
-                                  // style: BorderStyle.none,
                                   strokeAlign: BorderSide.strokeAlignOutside,
                                 ),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Title & subtitle
                                   Text(
                                     context.tr('register.title'),
                                     style: const TextStyle(
@@ -152,7 +147,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 28),
 
-                                  // Full Name
                                   CustomTextField(
                                     label: context.tr(
                                       'register.first_name_label',
@@ -189,7 +183,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 20),
 
-                                  // Email
                                   CustomTextField(
                                     label: 'register.email_label'.tr(),
                                     hint: context.tr('register.email_hint'),
@@ -201,14 +194,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       if (v == null || v.isEmpty) {
                                         return 'Email is required';
                                       }
-                                      if (!v.contains('@'))
+                                      if (!v.contains('@')) {
                                         return 'Invalid email';
+                                      }
                                       return null;
                                     },
                                   ),
                                   const SizedBox(height: 20),
 
-                                  // Password + live feedback
                                   BlocBuilder<PasswordCubit, PasswordState>(
                                     builder: (context, pwState) {
                                       return Column(
@@ -238,7 +231,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                           const SizedBox(height: 12),
 
-                                          // Strength bar
                                           PasswordStrengthBar(
                                             strength: pwState.strength,
                                             weakLabel: context.tr(
@@ -253,7 +245,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ),
                                           const SizedBox(height: 12),
 
-                                          // Validation checklist
                                           ChecklistItem(
                                             label: context.tr(
                                               'register.check_min',
@@ -280,7 +271,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 24),
 
-                                  // Terms checkbox
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -358,7 +348,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   const SizedBox(height: 28),
 
-                                  // Create account button
                                   BlocBuilder<PasswordCubit, PasswordState>(
                                     builder: (context, pwState) =>
                                         PrimaryButton(
@@ -376,7 +365,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             const SizedBox(height: 32),
 
-                            // Footer
                             Center(
                               child: Wrap(
                                 alignment: WrapAlignment.center,

@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'exceptions.dart';
 
 class FirebaseErrorHandler {
-  /// Handles Firestore Database Errors
   static ServerException handleFirestoreError(FirebaseException exception) {
     switch (exception.code) {
       case 'permission-denied':
@@ -40,7 +39,6 @@ class FirebaseErrorHandler {
     }
   }
 
-  /// Handles Firebase Messaging (FCM / Notifications) Errors
   static ServerException handleNotificationError(dynamic error) {
     if (error is FirebaseException) {
       switch (error.code) {

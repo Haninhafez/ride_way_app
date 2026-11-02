@@ -24,8 +24,8 @@ class UserModel extends UserEntity {
         refreshToken: json[ApiKeys.refreshToken],
         refreshTokenExpiryDate: json[ApiKeys.refreshTokenExpiration],
         expiresIn: json[ApiKeys.expiresIn],
-        firstName: json[ApiKeys.firstName],
-        lastName: json[ApiKeys.lastName],
+        firstName: json[ApiKeys.firstName]??"",
+        lastName: json[ApiKeys.lastName]??"",
         email: json[ApiKeys.email],
       );
 

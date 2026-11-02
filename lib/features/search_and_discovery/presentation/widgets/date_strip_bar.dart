@@ -27,7 +27,8 @@ class DateStripBar extends StatelessWidget {
         itemCount: dates.length,
         itemBuilder: (context, index) {
           final date = dates[index];
-          final isSelected = date.year == selectedDate.year &&
+          final isSelected =
+              date.year == selectedDate.year &&
               date.month == selectedDate.month &&
               date.day == selectedDate.day;
 
@@ -42,14 +43,16 @@ class DateStripBar extends StatelessWidget {
               margin: const EdgeInsets.only(right: 8),
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected
+                color: !isSelected
                     ? kColorPrimaryAction
-                    : (isDark ? const Color(0xFF1C1C1E) : Colors.white),
+                    : (isDark ? kColorAccentGold : KColorDarkGold),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isSelected
                       ? kColorPrimaryAction
-                      : (isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA)),
+                      : (isDark
+                            ? const Color(0xFF2C2C2E)
+                            : const Color(0xFFE5E5EA)),
                 ),
               ),
               child: Column(

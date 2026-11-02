@@ -6,7 +6,9 @@ class SelectSeatUseCase {
 
   SelectSeatUseCase(this.repository);
 
-  Future<List<Seat>> getSeatsForCoach(String trainId, String coachNumber) {
-    return repository.getSeatsForCoach(trainId, coachNumber);
+  Future<List<Seat>> getSeatsForCoach(String trainId, String coachNumber,classId, {
+    double classPrice = 0.0,
+  }) async {
+    return repository.getSeatsForCoach(trainId, coachNumber, classId, classPrice: classPrice);
   }
 }

@@ -59,7 +59,6 @@ class PassengerStepper extends StatelessWidget {
             ],
           ),
 
-          // Custom 32px Stepper Controls (- and +) with explicit accessibility labels
           Row(
             children: [
               Semantics(

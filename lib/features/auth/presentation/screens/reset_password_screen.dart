@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
+import 'package:ride_way_app/core/widgets/toast_app.dart';
 import 'package:ride_way_app/features/auth/presentation/presenter/cubit/password_cubit.dart';
 import 'package:ride_way_app/features/auth/presentation/presenter/cubit/password_state.dart';
 import 'package:ride_way_app/features/auth/presentation/widgets/auth_header.dart';
@@ -12,9 +13,6 @@ import 'package:ride_way_app/features/auth/presentation/widgets/otp_input_row.da
 import 'package:ride_way_app/features/auth/presentation/widgets/password_strength_bar.dart';
 import 'package:ride_way_app/features/auth/presentation/widgets/primary_button.dart';
 
-/// Reset password screen combining OTP verification and new password entry.
-///
-/// [email] is passed via GoRouter query parameter and displayed in the subtitle.
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key, required this.email});
 
@@ -30,7 +28,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _confirmPasswordController = TextEditingController();
 
   String _otpCode = '';
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void dispose() {
@@ -41,20 +39,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void _onUpdatePassword(PasswordCubit pwCubit) {
     if (_otpCode.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the full 6-digit code')),
-      );
+      AppToast.showError(context: context, message: 'Please enter the full 6-digit code');
+     
       return;
     }
     if (!_formKey.currentState!.validate()) return;
 
-    // TODO: Wire to reset-password BLoC/repository event when implemented
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Password updated! Please sign in.'),
-        backgroundColor: kColorSuccess,
-      ),
-    );
+    AppToast.showSuccess(context: context, message: 'Password updated! Please sign in.');
     context.go('/login');
   }
 
@@ -73,14 +64,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Header with back button ─────────────────
                     AuthHeader(
                       showBackButton: true,
                       onBack: () => context.pop(),
                     ),
                     const SizedBox(height: 28),
 
-                    // ── Card ────────────────────────────────────
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
@@ -97,7 +86,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Title
                           Text(
                             context.tr('reset.title'),
                             style: const TextStyle(
@@ -108,7 +96,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           const SizedBox(height: 6),
 
-                          // Subtitle with email
                           RichText(
                             text: TextSpan(
                               style: const TextStyle(
@@ -132,7 +119,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           const SizedBox(height: 28),
 
-                          // ── 6-Digit OTP Row (strict LTR) ────
                           const Text(
                             'Verification Code',
                             style: TextStyle(
@@ -149,7 +135,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           const SizedBox(height: 28),
 
-                          // ── New Password + live feedback ─────
                           BlocBuilder<PasswordCubit, PasswordState>(
                             builder: (context, pwState) {
                               return Column(
@@ -172,7 +157,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                   const SizedBox(height: 12),
 
-                                  // Strength bar
                                   PasswordStrengthBar(
                                     strength: pwState.strength,
                                     weakLabel: context.tr('reset.check_min'),
@@ -181,7 +165,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                   const SizedBox(height: 12),
 
-                                  // Checklist
                                   ChecklistItem(
                                     label: context.tr('reset.check_min'),
                                     isSatisfied: pwState.hasMinLength,
@@ -202,7 +185,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           const SizedBox(height: 20),
 
-                          // ── Confirm New Password ─────────────
                           PasswordTextField(
                             label: context.tr('reset.confirm_label'),
                             hint: context.tr('reset.confirm_hint'),
@@ -220,7 +202,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                           const SizedBox(height: 28),
 
-                          // ── Update button ────────────────────
                           BlocBuilder<PasswordCubit, PasswordState>(
                             builder: (context, pwState) => PrimaryButton(
                               label: context.tr('reset.update_btn'),

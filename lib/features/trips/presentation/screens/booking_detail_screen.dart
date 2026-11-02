@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ride_way_app/core/widgets/toast_app.dart';
 import '../../domain/entities/booking.dart';
 import '../cubit/booking_detail_cubit.dart';
 import '../cubit/booking_detail_state.dart';
@@ -34,13 +35,10 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     return BlocConsumer<BookingDetailCubit, BookingDetailState>(
       listener: (context, state) {
         if (state.status == BookingDetailStatus.cancelled) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Booking successfully cancelled.')),
-          );
+          AppToast.showSuccess(context: context, message: 'Booking successfully cancelled.');
         } else if (state.status == BookingDetailStatus.error && state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          AppToast.showError(context: context, message: state.errorMessage!);
+          
         }
       },
       builder: (context, state) {
@@ -91,19 +89,15 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Trip Overview Card
                       _buildTripOverviewCard(context, booking, dateStr, isDark),
                       const SizedBox(height: 20),
 
-                      // Passenger & Seat Allocation Card
                       _buildPassengersCard(context, booking, isDark),
                       const SizedBox(height: 20),
 
-                      // Payment Breakdown Card
                       _buildPaymentCard(context, booking, isDark),
                       const SizedBox(height: 24),
 
-                      // Destructive Action: Cancel Booking Button (for upcoming bookings)
                       if (isUpcoming)
                         Center(
                           child: TextButton.icon(
@@ -135,7 +129,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                 ),
               ),
 
-              // Primary Sticky Pill Button: "Open digital ticket"
               if (isUpcoming)
                 Container(
                   padding: EdgeInsets.only(
@@ -148,7 +141,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 16,
                         offset: const Offset(0, -4),
                       ),
@@ -264,7 +257,6 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           const Divider(height: 1),
           const SizedBox(height: 20),
 
-          // Departure & Arrival Columns (RTL naturally swaps sides, platform badge stays centered)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -295,13 +287,12 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                 ],
               ),
 
-              // Platform Badge (Stays Centered)
               Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: kColorAccentGold.withOpacity(0.15),
+                      color: kColorAccentGold.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: kColorAccentGold, width: 1),
                     ),
@@ -417,7 +408,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: kColorAccentGold.withOpacity(0.15),
+                      color: kColorAccentGold.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

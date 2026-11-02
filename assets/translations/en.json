@@ -55,7 +55,8 @@
   },
   "common": {
     "app_name": "RideWay",
-    "back": "Back"
+    "back": "Back",
+    "retry": "Retry"
   },
   "search": {
     "greeting": "Good morning",
@@ -71,7 +72,8 @@
     "recent_searches": "Recent Searches",
     "clear": "Clear",
     "saved_routes": "Saved Routes",
-    "trains_daily": "trains daily"
+    "trains_daily": "trains daily",
+    "select_station": "Select station"
   },
   "train_list": {
     "active_route": "{} ➔ {}",
@@ -212,6 +214,28 @@
     "no_bookings": "No bookings found",
     "no_notifications": "No notifications"
   },
+  "ticket": {
+    "cancelled_success": "Booking cancelled successfully.",
+    "cancel_failed": "Failed to cancel booking. Please try again.",
+    "capture_failed": "Could not capture ticket image. Please try again.",
+    "share_text": "My RideWay train ticket. View ticket: {url}",
+    "share_success": "Ticket share sheet opened.",
+    "share_failed": "Could not share ticket. Please try again.",
+    "download_success": "Ticket saved to your photo library.",
+    "download_failed": "Could not save ticket image. Please try again.",
+    "download_permission_denied": "Photo library access denied. Please allow access in Settings.",
+    "share_not_found": "Ticket not found",
+    "share_not_found_sub": "This link is invalid or has been removed.",
+    "share_expired": "Link expired",
+    "share_expired_sub": "This sharing link is no longer valid. Ask the ticket owner to share it again.",
+    "share_revoked": "Ticket no longer shared",
+    "share_revoked_sub": "The owner has stopped sharing this ticket.",
+    "share_network_error": "Connection error",
+    "shared_cancelled": "This booking has been cancelled. This ticket is no longer valid for travel.",
+    "shared_view_only": "View-only shared ticket",
+    "get_rideway_title": "Book your next journey",
+    "get_rideway_sub": "Download RideWay to search, book and manage all your train trips."
+  },
   "onboarding": {
     "page1_title": "Search & book in seconds",
     "page1_description": "Find every train across the Kingdom and book in a few taps.",
@@ -219,6 +243,102 @@
     "page2_description": "See the carriage, choose the window, travel exactly how you like.",
     "page3_title": "Your tickets, always with you",
     "page3_description": "Manage bookings and board with a digital QR ticket — even offline."
-  }
-  
+  },
+  "notification": {
+    "title": "Notifications",
+    "mark_all_as_read": "Mark all as read",
+    "unread": "Unread",
+    "today": "Today",
+    "earlier": "Earlier",
+    "empty_title": "No notifications yet",
+    "empty_message": "Your booking updates and trip reminders will appear here.",
+    "all_caught_up": "You're all caught up!",
+    "mark_as_read": "Mark as read",
+    "mark_as_unread": "Mark as unread",
+    "delete": "Delete notification",
+    "delete_all": "Delete all notifications",
+    "delete_confirmation": "Are you sure you want to delete this notification?",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "view_booking": "View booking",
+    "view_ticket": "View ticket",
+    "types": {
+      "booking_confirmed": "Booking confirmed",
+      "payment_received": "Payment received",
+      "payment_failed": "Payment failed",
+      "check_in_open": "Check-in is open soon",
+      "trip_reminder": "Upcoming trip reminder",
+      "trip_delayed": "Trip delayed",
+      "trip_cancelled": "Trip cancelled",
+      "refund_processed": "Refund processed",
+      "trip_completed": "Trip completed"
+    },
+    "messages": {
+      "booking_confirmed": "Your booking for {trainName} has been confirmed.",
+      "payment_received": "Your payment of {amount} has been received successfully.",
+      "payment_failed": "Your payment could not be processed. Please try again.",
+      "check_in_open": "Check-in for your trip {trainName} opens soon.",
+      "trip_reminder": "Your trip {trainName} departs in {minutes} minutes.",
+      "trip_delayed": "Your trip {trainName} is delayed by {minutes} minutes.",
+      "trip_cancelled": "Your trip {trainName} has been cancelled.",
+      "refund_processed": "Your refund of {amount} has been processed.",
+      "trip_completed": "Thank you for travelling with us. We hope you enjoyed your trip."
+    },
+    "time": {
+      "just_now": "Just now",
+      "minutes_ago": "{minutes} min ago",
+      "hours_ago": "{hours} hr ago",
+      "yesterday": "Yesterday"
+    },
+    "errors": {
+      "load_failed": "Failed to load notifications. Please try again.",
+      "update_failed": "Failed to update notification.",
+      "delete_failed": "Failed to delete notification."
+    }
+  },
+  "profile": {
+    "information": "Profile information",
+    "membership": "Membership tier",
+    "gold": "Gold",
+    "points": "Points",
+    "trips": "Trips",
+    "since": "Since",
+    "edit_profile": "Edit profile",
+    "account_settings": "Account settings",
+    "personal_details": "Personal details",
+    "password_security": "Password & security",
+    "booking_history": "Booking history",
+    "payment_methods": "Payment methods",
+    "preferences": "Preferences",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic",
+    "trip_notifications": "Trip notifications",
+    "dark_mode": "Dark mode",
+    "support": "Help & support",
+    "terms_privacy": "Terms & privacy",
+    "logout": "Log out",
+    "logout_title": "Log out of RideWay?",
+    "logout_message": "You will need to sign in again to access your bookings, rewards, and account settings.",
+    "cancel": "Cancel",
+    "confirm_logout": "Yes, log out",
+    "app_version": "RideWay v2.4.0 · Build 318",
+    "cards_count": "{} cards",
+    "trips_count": "{} trips",
+    "points_semantics": "{} points",
+    "user_avatar": "User avatar",
+    "user_name": "User name",
+    "email_address": "Email address",
+    "profile_card": "Profile information card",
+    "account_group": "Account settings group",
+    "preferences_group": "Preferences settings group",
+    "support_group": "Support and legal group",
+    "member_since": "Member since {}",
+    "switch_on": "{} switch, on",
+    "switch_off": "{} switch, off"
+  },
+  "homenav": "Home",
+  "profilenav": "Profile",
+  "notificationsnav": "Notifications",
+  "ticketsnav": "Tickets"
 }

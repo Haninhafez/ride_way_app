@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["REPLACE_WITH_YOUR_TEAM_ID.com.example.rideWayApp"],
+        "components": [
+          {
+            "/": "/ticket/*",
+            "comment": "Matches any ticket share link"
+          }
+        ]
+      }
+    ]
+  }
+}

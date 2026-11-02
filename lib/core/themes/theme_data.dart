@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 
-// ─── Brand Palette ─────────────────────────────────────────────────────────
 const kColorPrimaryAction = Color(
   0xFF181818,
-); // Charcoal Black – buttons/headers
+); 
 const kColorBackground = Color(0xFFF6F6F6);
 const kColorBackgroundnew = Color(0xff181818);
-// Off-white – scaffold background
 const kColorSubtitle = Color.fromARGB(255, 193, 193, 201);
 const kColorSubtitleold = Color(0xFF8E8E93);
 const kColorRedBrawon = Color(0xFF3A3A3C);
 
-/// Muted Grey – secondary text
 const kColorAccentGold = Color(0xFFD1A546);
-const KColorDarkGold = Color(0xff5B4C2B); // Gold – hyperlinks
-const kColorFieldFill = Color(0xFFFFFFFF); // White – input fill
-const kColorBorder = Color(0xFFE5E5EA); // Light border
-const kColorSuccess = Color(0xFF34C759); // Green – strong password / checks
+const KColorDarkGold = Color(0xff5B4C2B); 
+const kColorFieldFill = Color(0xFFFFFFFF); 
+const kColorBorder = Color(0xFFE5E5EA); 
+const kColorSuccess = Color(0xFF34C759); 
 const KColorDarkGrey = Color(0xff262626);
 
 ThemeData darkTheme = ThemeData(

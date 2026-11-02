@@ -19,6 +19,7 @@ class AuthSwitcher extends StatefulWidget {
 class _AuthSwitcherState extends State<AuthSwitcher> {
   @override
   bool isLogin = true;
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
@@ -57,14 +58,6 @@ class _AuthSwitcherState extends State<AuthSwitcher> {
               ),
         ),
         
-              // isLogin
-              //     ? LoginCard(theme: theme, width: width, formKey: widget.LoginformKey)
-              //     : 
-                  // RegisterCard(
-                  //     theme: theme,
-                  //     width: width,
-                  //     formkey: widget.formKeyRegister,
-                  //   ),
             
         
       ],

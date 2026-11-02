@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AuthToggle extends StatelessWidget {
-  AuthToggle({
+  const AuthToggle({
     super.key,
 
     required this.theme,

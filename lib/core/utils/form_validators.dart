@@ -3,7 +3,7 @@ class FormValidators {
     if (value == null || value.isEmpty) {
       return 'Please enter your name';
     } else {
-      final firstChar = value!.trim()[0];
+      final firstChar = value.trim()[0];
       if (firstChar != firstChar.toUpperCase()) {
         return 'First letter must be uppercase';
       }

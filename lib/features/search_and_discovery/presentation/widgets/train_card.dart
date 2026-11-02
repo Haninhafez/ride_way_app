@@ -30,7 +30,7 @@ class TrainCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
@@ -39,7 +39,6 @@ class TrainCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Code Badge + Train Name + Starting Price
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,7 +50,7 @@ class TrainCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: kColorAccentGold.withOpacity(0.2),
+                      color: kColorAccentGold.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: kColorAccentGold, width: 1),
                     ),
@@ -101,7 +100,6 @@ class TrainCard extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 16),
 
-          // Departure & Arrival Block
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -117,7 +115,6 @@ class TrainCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  // Enforce LTR for station codes
                   Directionality(
                     textDirection: ui.TextDirection.ltr,
                     child: Text(
@@ -132,7 +129,6 @@ class TrainCard extends StatelessWidget {
                 ],
               ),
 
-              // Route duration indicator line
               Column(
                 children: [
                   Text(
@@ -195,11 +191,9 @@ class TrainCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Seat Availability & Action Footer
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Seat Availability Indicator (Warning red/amber vs neutral)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -246,7 +240,6 @@ class TrainCard extends StatelessWidget {
                 ),
               ),
 
-              // Action Pill Button: "View details"
               ElevatedButton(
                 onPressed: onViewDetails,
                 style: ElevatedButton.styleFrom(

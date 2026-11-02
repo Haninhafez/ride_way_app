@@ -13,6 +13,7 @@ enum BookingStatus {
   seatsLoaded,
   passengersValidated,
   paymentProcessing,
+  ticketSaved,
   paymentSuccess,
   error,
 }
@@ -34,7 +35,8 @@ class BookingState extends Equatable {
   final bool isHoldTimerRunning;
   final BookingSummary? summary;
   final PaymentMethodType selectedPaymentMethod;
-  final String cardCvv;
+  final String ?bookingId;
+
   final int expandedPassengerIndex;
 
   const BookingState({
@@ -42,20 +44,20 @@ class BookingState extends Equatable {
     this.errorMessage,
     this.trainDetail,
     this.selectedClass,
-    this.passengerCount = 2,
-    this.selectedCoachNumber = '3',
+    this.passengerCount = 1,
+    this.selectedCoachNumber = '',
     this.coachSeats = const [],
     this.selectedSeats = const [],
     this.passengers = const [],
-    this.contactEmail = 'nasser.harbi@example.com',
-    this.contactPhone = '501234567',
+    this.contactEmail = '',
+    this.contactPhone = '',
     this.saveTravellers = true,
-    this.holdTimerSeconds = 522, // 08:42
+    this.holdTimerSeconds = 522, 
     this.isHoldTimerRunning = true,
     this.summary,
-    this.selectedPaymentMethod = PaymentMethodType.mada,
-    this.cardCvv = '',
-    this.expandedPassengerIndex = 0,
+    this.selectedPaymentMethod = PaymentMethodType.creditCard,
+
+    this.expandedPassengerIndex = 0,  this.bookingId ="",
   });
 
   String get formattedHoldTime {
@@ -81,12 +83,13 @@ class BookingState extends Equatable {
     bool? isHoldTimerRunning,
     BookingSummary? summary,
     PaymentMethodType? selectedPaymentMethod,
-    String? cardCvv,
+    bool clearError = false, 
     int? expandedPassengerIndex,
+    String? bookingId,
   }) {
     return BookingState(
       status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
       trainDetail: trainDetail ?? this.trainDetail,
       selectedClass: selectedClass ?? this.selectedClass,
       passengerCount: passengerCount ?? this.passengerCount,
@@ -102,31 +105,30 @@ class BookingState extends Equatable {
       summary: summary ?? this.summary,
       selectedPaymentMethod:
           selectedPaymentMethod ?? this.selectedPaymentMethod,
-      cardCvv: cardCvv ?? this.cardCvv,
       expandedPassengerIndex:
-          expandedPassengerIndex ?? this.expandedPassengerIndex,
+          expandedPassengerIndex ?? this.expandedPassengerIndex, bookingId: bookingId??" 0",
     );
   }
 
   @override
   List<Object?> get props => [
-        status,
-        errorMessage,
-        trainDetail,
-        selectedClass,
-        passengerCount,
-        selectedCoachNumber,
-        coachSeats,
-        selectedSeats,
-        passengers,
-        contactEmail,
-        contactPhone,
-        saveTravellers,
-        holdTimerSeconds,
-        isHoldTimerRunning,
-        summary,
-        selectedPaymentMethod,
-        cardCvv,
-        expandedPassengerIndex,
-      ];
+    status,
+    errorMessage,
+    trainDetail,
+    selectedClass,
+    passengerCount,
+    selectedCoachNumber,
+    coachSeats,
+    selectedSeats,
+    passengers,
+    contactEmail,
+    contactPhone,
+    saveTravellers,
+    holdTimerSeconds,
+    isHoldTimerRunning,
+    summary,
+    selectedPaymentMethod,
+
+    expandedPassengerIndex,
+  ];
 }

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// A single checklist row showing a validation criterion.
-///
-/// The icon animates between a grey circle and a green checkmark
-/// when [isSatisfied] changes.
 class ChecklistItem extends StatelessWidget {
   const ChecklistItem({
     super.key,

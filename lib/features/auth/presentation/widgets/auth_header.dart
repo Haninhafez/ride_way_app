@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// App logo header displayed at the top of each auth screen.
-///
-/// Shows the RideWay train icon badge + brand name "RideWay".
-/// Optionally shows a back button via [showBackButton].
 class AuthHeader extends StatelessWidget {
   const AuthHeader({super.key, this.showBackButton = false, this.onBack});
 
@@ -21,7 +17,7 @@ class AuthHeader extends StatelessWidget {
             alignment: AlignmentDirectional.centerStart,
             child: GestureDetector(
               onTap: onBack,
-              child: Container(
+              child: SizedBox(
                 width: 40,
                 height: 40,
 
@@ -34,7 +30,6 @@ class AuthHeader extends StatelessWidget {
             ),
           ),
         const SizedBox(width: 24),
-        // Logo badge
         Container(
           width: 72,
           height: 72,
@@ -50,7 +45,6 @@ class AuthHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        // Brand name
         const Text(
           'RideWay',
           style: TextStyle(

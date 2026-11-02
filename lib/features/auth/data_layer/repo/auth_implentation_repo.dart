@@ -23,7 +23,8 @@ class AuthImplentationRepo extends AuthRepo {
         key: ApiKeys.refreshToken,
         value: model.refreshToken,
       );
-      CacheHelper.saveData(key: ApiKeys.email, value: model.email);
+      CacheHelper.saveData(key: ApiKeys.id, value: model.id);
+   
       return Right(model.toEntity());
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -63,7 +64,7 @@ class AuthImplentationRepo extends AuthRepo {
         key: ApiKeys.refreshToken,
         value: model.refreshToken,
       );
-      CacheHelper.saveData(key: ApiKeys.email, value: model.email);
+       CacheHelper.saveData(key: ApiKeys.id, value: model.id);
       return Right(model.toEntity());
     } catch (e) {
       return Left(ServerFailure(e.toString()));

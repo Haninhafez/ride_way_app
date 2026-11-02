@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 enum SeatType { standard, window, aisle, accessible }
 
 class Seat extends Equatable {
-  final String seatNumber; // e.g., "12A"
-  final String coachNumber; // e.g., "3"
+  final String seatNumber; 
+  final String coachNumber; 
   final bool isOccupied;
   final double price;
   final SeatType type;
@@ -18,6 +18,15 @@ class Seat extends Equatable {
     this.type = SeatType.standard,
     this.isAccessible = false,
   });
+
+int get rowKey {
+  final numString = seatNumber.replaceAll(RegExp(r'[^0-9]'), '');
+  return int.tryParse(numString) ?? 0;
+}
+
+String get column => seatNumber.replaceAll(RegExp(r'[^A-Z]'), '');
+
+
 
   Seat copyWith({
     String? seatNumber,

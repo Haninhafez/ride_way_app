@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// Primary full-width pill action button in charcoal black.
-///
-/// Used as the main CTA on all three auth screens ("Sign in",
-/// "Create account", "Update password").
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key,

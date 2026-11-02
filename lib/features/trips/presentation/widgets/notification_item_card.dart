@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+
 import '../../domain/entities/trip_notification.dart';
 import '../../../../core/themes/theme_data.dart';
 
@@ -17,27 +19,27 @@ class NotificationItemCard extends StatelessWidget {
       case NotificationType.delay:
         return Icons.warning_amber_rounded;
       case NotificationType.reminder:
-        return Icons.access_time_filled;
+        return Icons.access_time_rounded;
       case NotificationType.confirmation:
-        return Icons.confirmation_number;
+        return Icons.confirmation_number_outlined;
       case NotificationType.payment:
-        return Icons.credit_card;
+        return Icons.account_balance_wallet_outlined;
       case NotificationType.refund:
-        return Icons.replay_outlined;
+        return Icons.replay_rounded;
     }
   }
 
   Color _getTileBg() {
     switch (notification.type) {
       case NotificationType.delay:
-        return const Color(0xFFFDF2F2); // Light Red
+        return const Color(0xFFFCE8E6);
       case NotificationType.reminder:
-        return const Color(0xFFFBEFE3); // Warm Amber
+        return const Color(0xFFFFF2D9);
       case NotificationType.confirmation:
-        return const Color(0xFFEFF2E6); // Sage
+        return const Color(0xFFEEF2E5);
       case NotificationType.payment:
       case NotificationType.refund:
-        return const Color(0xFFF2F2F7); // Neutral
+        return const Color(0xFFFBEBDD);
     }
   }
 
@@ -46,114 +48,156 @@ class NotificationItemCard extends StatelessWidget {
       case NotificationType.delay:
         return const Color(0xFFD93838);
       case NotificationType.reminder:
-        return kColorAccentGold;
+        return const Color(0xFFB78B36);
       case NotificationType.confirmation:
-        return kColorSuccess;
+        return const Color(0xFF77845D);
       case NotificationType.payment:
       case NotificationType.refund:
-        return kColorPrimaryAction;
+        return const Color(0xFFD18B55);
     }
   }
 
-  String _getTimestampLabel() {
-    final diff = DateTime.now().difference(notification.timestamp);
-    if (diff.inMinutes < 60) {
-      return '${diff.inMinutes} min ago';
-    } else if (diff.inHours < 24) {
-      return '${diff.inHours} hours ago';
-    } else {
-      return '${diff.inDays} days ago';
+  String _getTimestampLabel(BuildContext context) {
+    final now = DateTime.now();
+    final timestamp = notification.timestamp;
+    final difference = now.difference(timestamp);
+
+    if (difference.isNegative) {
+      return DateFormat('h:mm a').format(timestamp);
     }
+
+    if (difference.inMinutes < 1) {
+      return 'notification.time.just_now'.tr();
+    }
+
+    if (difference.inHours < 1) {
+      return 'notification.time.minutes_ago'.tr(
+        namedArgs: {'minutes': '${difference.inMinutes}'},
+      );
+    }
+
+    if (difference.inHours < 24 &&
+        now.day == timestamp.day &&
+        now.month == timestamp.month &&
+        now.year == timestamp.year) {
+      return DateFormat('h:mm a').format(timestamp);
+    }
+
+    if (difference.inDays < 2) {
+      return 'notification.time.yesterday'.tr();
+    }
+
+    return DateFormat('MMM d').format(timestamp);
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: notification.isUnread
-                ? kColorAccentGold.withOpacity(0.5)
-                : (isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA)),
-            width: notification.isUnread ? 1.5 : 1,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C222B) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2C3440) : const Color(0xFFECECEC),
+            ),
+            boxShadow: isDark
+                ? []
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.035),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
           ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon Tile (Kind-tinted)
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF2C2C2E) : _getTileBg(),
-                borderRadius: BorderRadius.circular(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? _getTileBg().withValues(alpha: 0.15)
+                      : _getTileBg(),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(_getIcon(), size: 20, color: _getIconColor()),
               ),
-              child: Icon(
-                _getIcon(),
-                size: 24,
-                color: _getIconColor(),
-              ),
-            ),
-            const SizedBox(width: 14),
+              const SizedBox(width: 12),
 
-            // Content Block
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          notification.title,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notification.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: notification.isUnread
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF303238),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _getTimestampLabel(context),
                           style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : kColorPrimaryAction,
+                            fontSize: 9,
+                            color: isDark
+                                ? Colors.white54
+                                : const Color(0xFF888888),
                           ),
                         ),
+                        if (notification.isUnread) ...[
+                          const SizedBox(width: 5),
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: kColorAccentGold,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      notification.message,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11,
+                        height: 1.35,
+                        color: isDark
+                            ? Colors.white70
+                            : const Color(0xFF696B70),
                       ),
-                      if (notification.isUnread)
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: const BoxDecoration(
-                            color: kColorAccentGold,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    notification.message,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: isDark ? Colors.white70 : const Color(0xFF3A3A3C),
-                      height: 1.3,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _getTimestampLabel(),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: kColorSubtitle,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

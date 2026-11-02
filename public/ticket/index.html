@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RideWay – Digital Ticket</title>
+  <style>
+    :root {
+      --bg: #F6F6F6; --card: #FFFFFF; --primary: #181818; --gold: #D1A546;
+      --sub: #C1C1C9; --red: #D93838; --green: #34C759; --radius: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, 'Outfit', sans-serif; background: var(--bg);
+           color: var(--primary); min-height: 100vh; display: flex;
+           flex-direction: column; align-items: center; padding: 24px 16px; }
+    .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+            color: var(--primary); margin-bottom: 24px; }
+    .logo span { color: var(--gold); }
+    .card { background: var(--card); border-radius: var(--radius); width: 100%;
+            max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,.10);
+            overflow: hidden; }
+    .card-header { background: var(--primary); padding: 18px 20px;
+                   display: flex; align-items: center; justify-content: space-between; }
+    .train-label { color: #fff; font-size: 15px; font-weight: 700; }
+    .train-sub { color: var(--sub); font-size: 12px; }
+    .badge { padding: 4px 12px; border-radius: 14px; font-size: 11px;
+             font-weight: 700; border: 1px solid var(--gold);
+             color: var(--gold); background: rgba(209,165,70,.15); }
+    .route { display: flex; align-items: flex-start; justify-content: space-between;
+             padding: 20px; gap: 8px; }
+    .station { flex: 1; }
+    .station-code { font-size: 36px; font-weight: 800; line-height: 1.1; direction: ltr; }
+    .station-name { font-size: 11px; color: var(--sub); margin-top: 2px; }
+    .time { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .center-arrow { display: flex; flex-direction: column; align-items: center;
+                    padding-top: 12px; flex-shrink: 0; }
+    .arrow-line { width: 60px; height: 1.5px; background: var(--gold); }
+    .arrow-icon { font-size: 18px; color: var(--gold); }
+    .meta { padding: 0 20px 20px; }
+    .divider { height: 1px; background: #E5E5EA; margin-bottom: 16px; }
+    .meta-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .meta-cell { display: flex; flex-direction: column; align-items: center; }
+    .meta-label { font-size: 11px; color: var(--sub); margin-bottom: 3px; }
+    .meta-value { font-size: 13px; font-weight: 700; }
+    .tear { position: relative; height: 24px; margin: 0; }
+    .tear-notch { position: absolute; width: 20px; height: 24px; background: var(--bg);
+                  top: 0; }
+    .tear-notch.left { left: 0; border-radius: 0 12px 12px 0; }
+    .tear-notch.right { right: 0; border-radius: 12px 0 0 12px; }
+    .tear-dots { position: absolute; top: 50%; left: 24px; right: 24px;
+                 transform: translateY(-50%); border-top: 2px dashed #E5E5EA; }
+    .qr-section { padding: 24px; display: flex; flex-direction: column;
+                  align-items: center; gap: 8px; }
+    .qr-box { background: #fff; border: 1.5px solid #E5E5EA; border-radius: 16px;
+              padding: 16px; width: 170px; height: 170px; display: flex;
+              align-items: center; justify-content: center; }
+    .qr-box img { width: 100%; height: 100%; }
+    .booking-ref { font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+                   color: var(--primary); }
+    .status-cancelled { color: var(--red); }
+    .status-completed { color: var(--sub); }
+    .status-upcoming { color: var(--green); }
+    .cta { background: var(--primary); color: #fff; border: none; border-radius: 28px;
+           padding: 14px 32px; font-size: 15px; font-weight: 700; cursor: pointer;
+           margin-top: 24px; width: 100%; max-width: 420px; text-decoration: none;
+           display: block; text-align: center; }
+    .unavailable { text-align: center; padding: 48px 24px; max-width: 340px; }
+    .unavailable-icon { font-size: 64px; margin-bottom: 16px; }
+    .unavailable h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .unavailable p { color: var(--sub); font-size: 14px; line-height: 1.5; }
+    .loading { text-align: center; padding: 48px 24px; color: var(--sub); font-size: 15px; }
+    /* RTL support */
+    [dir="rtl"] { font-family: -apple-system, 'ReadexPro', sans-serif; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0F131A; --card: #1C1C1E; --primary: #FFFFFF; }
+      body { color: #fff; }
+      .tear-notch { background: var(--bg); }
+      .cta { background: #FFFFFF; color: #181818; }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">Ride<span>Way</span></div>
+  <div id="root"><div class="loading">Loading ticket…</div></div>
+  <a id="open-app" class="cta" style="display:none" href="#">Open in RideWay app</a>
+
+  <script>
+    // Replace FUNCTIONS_BASE_URL with your deployed function URL.
+    const FUNCTIONS_BASE_URL = 'https://us-central1-ride-way-app.cloudfunctions.net';
+    const APP_SCHEME = 'rideway'; // custom scheme if configured (optional)
+
+    const lang = navigator.language.startsWith('ar') ? 'ar' : 'en';
+    if (lang === 'ar') { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); }
+
+    const L = {
+      en: {
+        notFound: 'Ticket not found', notFoundSub: 'This link is invalid or has been removed.',
+        expired: 'Ticket link expired', expiredSub: 'This sharing link is no longer valid. Ask the owner to share it again.',
+        revoked: 'Ticket no longer shared', revokedSub: 'The owner has stopped sharing this ticket.',
+        cancelled: 'Booking Cancelled', open: 'Open in RideWay app',
+        date: 'Date', coach: 'Coach', seats: 'Seats', passenger: 'Passenger',
+        status: 'Status', payment: 'Payment', paid: 'Paid', payStation: 'Pay at station',
+        upcoming: 'Upcoming', completed: 'Completed', error: 'Something went wrong'
+      },
+      ar: {
+        notFound: 'التذكرة غير موجودة', notFoundSub: 'هذا الرابط غير صالح أو تمت إزالته.',
+        expired: 'انتهت صلاحية الرابط', expiredSub: 'لم يعد هذا الرابط صالحاً. اطلب من المالك مشاركته مجدداً.',
+        revoked: 'التذكرة لم تعد مشاركة', revokedSub: 'أوقف المالك مشاركة هذه التذكرة.',
+        cancelled: 'تم إلغاء الحجز', open: 'فتح في تطبيق RideWay',
+        date: 'التاريخ', coach: 'المقصورة', seats: 'المقاعد', passenger: 'الراكب',
+        status: 'الحالة', payment: 'الدفع', paid: 'مدفوع', payStation: 'الدفع في المحطة',
+        upcoming: 'قادمة', completed: 'مكتملة', error: 'حدث خطأ ما'
+      }
+    }[lang];
+
+    function token() {
+      // URL shape: /ticket/<token>  or  /ticket/<token>?...
+      const parts = window.location.pathname.split('/');
+      return parts[parts.length - 1] || '';
+    }
+
+    function showUnavailable(icon, title, sub) {
+      document.getElementById('root').innerHTML =
+        `<div class="unavailable"><div class="unavailable-icon">${icon}</div>` +
+        `<h2>${title}</h2><p>${sub}</p></div>`;
+    }
+
+    function render(t) {
+      const date = t.travelDate ? new Date(t.travelDate + 'T00:00:00').toLocaleDateString(lang === 'ar' ? 'ar-SA' : 'en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' }) : '';
+      const statusClass = t.bookingStatus === 'cancelled' ? 'status-cancelled' : t.bookingStatus === 'completed' ? 'status-completed' : 'status-upcoming';
+      const statusLabel = t.bookingStatus === 'cancelled' ? L.cancelled : t.bookingStatus === 'completed' ? L.completed : L.upcoming;
+      const payLabel = t.paymentStatus === 'pay_at_station' ? L.payStation : L.paid;
+
+      document.getElementById('root').innerHTML = `
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="train-label">🚆 ${t.trainCode}</div>
+              <div class="train-sub">${t.trainName}</div>
+            </div>
+            <div class="badge ${statusClass}">${statusLabel}</div>
+          </div>
+          <div class="route">
+            <div class="station">
+              <div class="station-code">${t.originCode}</div>
+              <div class="station-name">${t.originName}</div>
+              <div class="time">${t.departureTime}</div>
+            </div>
+            <div class="center-arrow">
+              <div class="arrow-line"></div>
+              <div class="arrow-icon">🚂</div>
+              <div class="arrow-line"></div>
+            </div>
+            <div class="station" style="text-align:${lang==='ar'?'left':'right'}">
+              <div class="station-code">${t.destinationCode}</div>
+              <div class="station-name">${t.destinationName}</div>
+              <div class="time">${t.arrivalTime}</div>
+            </div>
+          </div>
+          <div class="meta">
+            <div class="divider"></div>
+            <div class="meta-grid">
+              <div class="meta-cell"><div class="meta-label">${L.date}</div><div class="meta-value">${date}</div></div>
+              <div class="meta-cell"><div class="meta-label">${L.coach}</div><div class="meta-value">C${t.coach}</div></div>
+              <div class="meta-cell"><div class="meta-label">${L.seats}</div><div class="meta-value">${t.seatNumbers}</div></div>
+            </div>
+            <div class="meta-grid" style="margin-top:12px">
+              <div class="meta-cell"><div class="meta-label">${L.passenger}</div><div class="meta-value">${t.maskedPassengerName}</div></div>
+              <div class="meta-cell"><div class="meta-label">${L.status}</div><div class="meta-value ${statusClass}">${statusLabel}</div></div>
+              <div class="meta-cell"><div class="meta-label">${L.payment}</div><div class="meta-value">${payLabel}</div></div>
+            </div>
+          </div>
+          <div class="tear"><div class="tear-notch left"></div><div class="tear-dots"></div><div class="tear-notch right"></div></div>
+          <div class="qr-section">
+            <div class="qr-box">
+              <!-- QR rendered via a free SVG QR lib loaded below -->
+              <canvas id="qrCanvas" width="138" height="138"></canvas>
+            </div>
+            <div class="booking-ref">${token()}</div>
+          </div>
+        </div>`;
+
+      // Simple QR via qrcode-generator (CDN) — replace with your preferred lib
+      document.getElementById('open-app').style.display = 'block';
+      document.getElementById('open-app').textContent = L.open;
+      document.getElementById('open-app').href = `https://YOUR_DOMAIN/ticket/${token()}`;
+    }
+
+    async function load() {
+      const t = token();
+      if (!t) { showUnavailable('🔍', L.notFound, L.notFoundSub); return; }
+      try {
+        const resp = await fetch(`${FUNCTIONS_BASE_URL}/getSharedTicket?token=${encodeURIComponent(t)}`);
+        if (resp.status === 404) { showUnavailable('🔍', L.notFound, L.notFoundSub); return; }
+        if (resp.status === 410) {
+          const body = await resp.json();
+          if (body.error === 'revoked') { showUnavailable('🚫', L.revoked, L.revokedSub); return; }
+          showUnavailable('⏰', L.expired, L.expiredSub);
+          return;
+        }
+        if (!resp.ok) { showUnavailable('⚠️', L.error, ''); return; }
+        const data = await resp.json();
+        render(data);
+      } catch { showUnavailable('📶', L.error, ''); }
+    }
+
+    load();
+  </script>
+</body>
+</html>

@@ -1,16 +1,16 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:ride_way_app/core/database/cache/cache_helper.dart';
 import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
-import 'package:ride_way_app/features/account/data/datasources/account_remote_data_source.dart';
-import 'package:ride_way_app/features/account/data/repositories/account_repository_impl.dart';
-import 'package:ride_way_app/features/account/domain/usecases/get_user_profile_usecase.dart';
+import 'package:ride_way_app/core/themes/theme_notfire.dart';
 import 'package:ride_way_app/features/account/presentation/cubit/profile_cubit.dart';
 import 'package:ride_way_app/features/account/presentation/cubit/profile_state.dart';
-import 'package:ride_way_app/features/auth/presentation/presenter/bloc/auth_bloc.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/models/add_trains.dart';
+import 'package:ride_way_app/features/account/presentation/screens/edit_profile_screen.dart';
+import 'package:ride_way_app/features/account/presentation/screens/password_security_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -40,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Semantics(
-                        label: 'Profile information card',
+                        label: 'profile.profile_card'.tr(),
                         child: Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
@@ -60,15 +60,10 @@ class ProfileScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Semantics(
-                                    label: 'User avatar',
+                                    label: 'profile.user_avatar'.tr(),
                                     child: CircleAvatar(
                                       radius: 36,
-                                      // backgroundColor: kColorBackground,
-                                      child: const Icon(
-                                        Icons.person,
-                                        // color: kColorSubtitle,
-                                        size: 40,
-                                      ),
+                                      child: const Icon(Icons.person, size: 40),
                                     ),
                                   ),
                                   const SizedBox(width: 16),
@@ -81,15 +76,15 @@ class ProfileScreen extends StatelessWidget {
                                           children: [
                                             Flexible(
                                               child: Semantics(
-                                                label: 'User name',
+                                                label: 'profile.user_name'.tr(),
                                                 child: Text(
                                                   profile != null
                                                       ? '${profile.firstName} ${profile.lastName}'
-                                                      : 'Nasser Al-Harbi',
+                                                      : 'profile.default_name'
+                                                            .tr(),
                                                   style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w700,
-                                                    // color: kColorPrimaryAction,
                                                     fontFamily: 'ReadexPro',
                                                   ),
                                                 ),
@@ -103,14 +98,15 @@ class ProfileScreen extends StatelessWidget {
                                                     vertical: 4,
                                                   ),
                                               decoration: BoxDecoration(
-                                                // color: const Color(0xFFFBEFE3),
                                                 borderRadius:
                                                     BorderRadius.circular(100),
                                               ),
                                               child: Semantics(
-                                                label: 'Membership tier',
+                                                label: 'profile.membership'
+                                                    .tr(),
                                                 child: Text(
-                                                  profile?.tier ?? 'Gold',
+                                                  profile?.tier ??
+                                                      'profile.gold'.tr(),
                                                   style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w600,
@@ -124,13 +120,12 @@ class ProfileScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 4),
                                         Semantics(
-                                          label: 'Email address',
+                                          label: 'profile.email_address'.tr(),
                                           child: Text(
                                             profile?.email ??
                                                 'nasser.alharbi@mail.com',
                                             style: const TextStyle(
                                               fontSize: 13,
-                                              // color: kColorSubtitle,
                                               fontFamily: 'Outfit',
                                             ),
                                           ),
@@ -141,8 +136,11 @@ class ProfileScreen extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Semantics(
-                                              label:
-                                                  '${profile?.points ?? 12480} points',
+                                              label: 'profile.points_semantics'.tr(
+                                                args: [
+                                                  '${profile?.points ?? 12480}',
+                                                ],
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -161,17 +159,14 @@ class ProfileScreen extends StatelessWidget {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      // color:
-                                                      //     kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
                                                   const SizedBox(height: 2),
-                                                  const Text(
-                                                    'Points',
+                                                  Text(
+                                                    'profile.points'.tr(),
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -179,8 +174,11 @@ class ProfileScreen extends StatelessWidget {
                                               ),
                                             ),
                                             Semantics(
-                                              label:
-                                                  '${profile?.totalTrips ?? 34} trips',
+                                              label: 'profile.trips_semantics'.tr(
+                                                args: [
+                                                  '${profile?.totalTrips ?? 34}',
+                                                ],
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -192,17 +190,14 @@ class ProfileScreen extends StatelessWidget {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      // color:
-                                                      //     kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
                                                   const SizedBox(height: 2),
-                                                  const Text(
-                                                    'Trips',
+                                                  Text(
+                                                    'profile.trips'.tr(),
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -210,8 +205,12 @@ class ProfileScreen extends StatelessWidget {
                                               ),
                                             ),
                                             Semantics(
-                                              label:
-                                                  'Member since ${profile?.memberSince ?? '2023'}',
+                                              label: 'profile.member_since'.tr(
+                                                args: [
+                                                  profile?.memberSince ??
+                                                      '2023',
+                                                ],
+                                              ),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -223,17 +222,14 @@ class ProfileScreen extends StatelessWidget {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      // color:
-                                                      // kColorPrimaryAction,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
                                                   const SizedBox(height: 2),
-                                                  const Text(
-                                                    'Since',
+                                                  Text(
+                                                    'profile.since'.tr(),
                                                     style: TextStyle(
                                                       fontSize: 11,
-                                                      // color: kColorSubtitle,
                                                       fontFamily: 'Outfit',
                                                     ),
                                                   ),
@@ -252,7 +248,13 @@ class ProfileScreen extends StatelessWidget {
                                 width: double.infinity,
                                 child: OutlinedButton.icon(
                                   onPressed: () {
-                                    context.push('/profile/edit');
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditProfileScreen(),
+                                      ),
+                                    );
                                   },
                                   icon: Icon(
                                     Icons.edit_outlined,
@@ -262,7 +264,7 @@ class ProfileScreen extends StatelessWidget {
                                     size: 18,
                                   ),
                                   label: Text(
-                                    'Edit profile',
+                                    'profile.edit_profile'.tr(),
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
@@ -273,7 +275,6 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                   ),
                                   style: OutlinedButton.styleFrom(
-                                    // foregroundColor: kColorPrimaryAction,
                                     side: const BorderSide(color: kColorBorder),
                                     shape: const StadiumBorder(),
                                     padding: const EdgeInsets.symmetric(
@@ -288,7 +289,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       Semantics(
-                        label: 'Account settings group',
+                        label: 'profile.account_group'.tr(),
 
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -307,7 +308,7 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               _SettingsTile(
                                 icon: Icons.person_outline,
-                                title: 'Personal details',
+                                title: 'profile.personal_details'.tr(),
                                 onTap: () {},
                               ),
                               const Divider(
@@ -317,9 +318,15 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               _SettingsTile(
                                 icon: Icons.lock_outline,
-                                title: 'Password & security',
+                                title: 'profile.password_security'.tr(),
                                 onTap: () {
-                                  context.push('/profile/password');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PasswordSecurityScreen(),
+                                    ),
+                                  );
                                 },
                               ),
                               const Divider(
@@ -329,8 +336,10 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               _SettingsTile(
                                 icon: Icons.confirmation_num_outlined,
-                                title: 'Booking history',
-                                trailingBadge: '34 trips',
+                                title: 'profile.booking_history'.tr(),
+                                trailingBadge: 'profile.trips_count'.tr(
+                                  args: ['${profile?.totalTrips ?? 34}'],
+                                ),
                                 onTap: () {},
                               ),
                               const Divider(
@@ -340,8 +349,10 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               _SettingsTile(
                                 icon: Icons.credit_card_outlined,
-                                title: 'Payment methods',
-                                trailingBadge: '2 cards',
+                                title: 'profile.payment_methods'.tr(),
+                                trailingBadge: 'profile.cards_count'.tr(
+                                  args: ['2'],
+                                ),
                                 onTap: () {},
                               ),
                             ],
@@ -350,7 +361,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Semantics(
-                        label: 'Preferences settings group',
+                        label: 'profile.preferences_group'.tr(),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -368,9 +379,11 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               _SettingsTile(
                                 icon: Icons.language_outlined,
-                                title: 'Language',
+                                title: 'profile.language'.tr(),
                                 trailing: Text(
-                                  state.selectedLanguage,
+                                  context.locale.languageCode == 'ar'
+                                      ? 'profile.arabic'.tr()
+                                      : 'profile.english'.tr(),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
@@ -378,7 +391,7 @@ class ProfileScreen extends StatelessWidget {
                                     fontFamily: 'Outfit',
                                   ),
                                 ),
-                                onTap: () {},
+                                onTap: () => _showLanguagePicker(context),
                               ),
                               const Divider(
                                 height: 1,
@@ -387,7 +400,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               _SwitchTile(
                                 icon: Icons.notifications_outlined,
-                                title: 'Trip notifications',
+                                title: 'profile.trip_notifications'.tr(),
                                 value: state.notificationsEnabled,
                                 onChanged: (v) => cubit.toggleNotifications(v),
                               ),
@@ -396,11 +409,17 @@ class ProfileScreen extends StatelessWidget {
                                 color: kColorBorder,
                                 indent: 56,
                               ),
-                              _SwitchTile(
-                                icon: Icons.dark_mode_outlined,
-                                title: 'Dark mode',
-                                value: state.darkModeEnabled,
-                                onChanged: (v) => cubit.toggleDarkMode(v),
+                              Consumer<ThemeNotifier>(
+                                builder: (context, notifier, child) {
+                                  return _SwitchTile(
+                                    icon: Icons.dark_mode_outlined,
+                                    title: 'profile.dark_mode'.tr(),
+                                    value: notifier.isDarkMode,
+                                    onChanged: (_) {
+                                      notifier.toggleDarkMode();
+                                    },
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -408,7 +427,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Semantics(
-                        label: 'Support and legal group',
+                        label: 'profile.support_group'.tr(),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -426,7 +445,7 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               _SettingsTile(
                                 icon: Icons.help_outline,
-                                title: 'Help & support',
+                                title: 'profile.help_support'.tr(),
                                 onTap: () {
                                   context.push('/support');
                                 },
@@ -438,7 +457,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               _SettingsTile(
                                 icon: Icons.gavel_outlined,
-                                title: 'Terms & privacy',
+                                title: 'profile.terms_privacy'.tr(),
                                 onTap: () {},
                               ),
                             ],
@@ -455,7 +474,7 @@ class ProfileScreen extends StatelessWidget {
                                   showGeneralDialog(
                                     context: context,
                                     barrierDismissible: true,
-                                    barrierLabel: 'Logout',
+                                    barrierLabel: 'profile.logout'.tr(),
                                     barrierColor: Colors.black54,
                                     transitionDuration: const Duration(
                                       milliseconds: 300,
@@ -471,9 +490,8 @@ class ProfileScreen extends StatelessWidget {
                                               color: Colors.transparent,
                                               child: _LogoutDialog(
                                                 onConfirm: () async {
-                                                 await CacheHelper.clearData();
+                                                  await CacheHelper.clearData();
                                                   context.go('/');
-                                                  // logout logic
                                                 },
                                               ),
                                             ),
@@ -504,8 +522,8 @@ class ProfileScreen extends StatelessWidget {
                             color: Color(0xFFC0392B),
                             size: 20,
                           ),
-                          label: const Text(
-                            'Log out',
+                          label: Text(
+                            'profile.logout'.tr(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -525,9 +543,9 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       Center(
                         child: Semantics(
-                          label: 'App version 2.4.0 build 318',
-                          child: const Text(
-                            'RideWay v2.4.0 · Build 318',
+                          label: 'profile.app_version_semantics'.tr(),
+                          child: Text(
+                            'profile.app_version'.tr(),
                             style: TextStyle(
                               fontSize: 12,
                               color: kColorSubtitle,
@@ -537,12 +555,6 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     await seedTrains();
-                      //   },
-                      //   child: const Text('Show Model'),
-                      // ),
                     ],
                   ),
                 ),
@@ -553,6 +565,58 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _showLanguagePicker(BuildContext context) async {
+  await showModalBottomSheet<void>(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (sheetContext) {
+      final currentLanguage = context.locale.languageCode;
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'profile.choose_language'.tr(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text('profile.english'.tr()),
+              trailing: currentLanguage == 'en'
+                  ? const Icon(Icons.check, color: kColorAccentGold)
+                  : null,
+              onTap: () async {
+                await context.setLocale(const Locale('en'));
+                if (sheetContext.mounted) Navigator.pop(sheetContext);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text('profile.arabic'.tr()),
+              trailing: currentLanguage == 'ar'
+                  ? const Icon(Icons.check, color: kColorAccentGold)
+                  : null,
+              onTap: () async {
+                await context.setLocale(const Locale('ar'));
+                if (sheetContext.mounted) Navigator.pop(sheetContext);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 class _SettingsTile extends StatelessWidget {
@@ -572,7 +636,7 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRTL = Directionality.of(context) == TextDirection.rtl;
+    final isRTL = Directionality.of(context) == TextDirection.RTL;
     final chevronIcon = isRTL ? Icons.arrow_back_ios : Icons.arrow_forward_ios;
 
     return Semantics(
@@ -596,7 +660,6 @@ class _SettingsTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      // color: kColorPrimaryAction,
                       fontFamily: 'Outfit',
                     ),
                   ),
@@ -608,7 +671,6 @@ class _SettingsTile extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      // color: const Color(0xFFFBEFE3),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -673,13 +735,17 @@ class _SwitchTile extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      // color: kColorPrimaryAction,
                       fontFamily: 'Outfit',
                     ),
                   ),
                 ),
                 Semantics(
-                  label: '$title switch, ${value ? 'on' : 'off'}',
+                  label: 'profile.switch_semantics'.tr(
+                    args: [
+                      title,
+                      value ? 'profile.on'.tr() : 'profile.off'.tr(),
+                    ],
+                  ),
                   child: Switch.adaptive(
                     value: value,
                     onChanged: onChanged,
@@ -739,20 +805,19 @@ class _LogoutDialog extends StatelessWidget {
             child: const Icon(Icons.logout, color: Color(0xFFC0392B), size: 28),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Log out of RideWay?',
+          Text(
+            'profile.logout_title'.tr(),
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              // color: kColorPrimaryAction,
               fontFamily: 'ReadexPro',
             ),
           ),
           const SizedBox(height: 8),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'You will need to sign in again to access your bookings, rewards, and account settings.',
+              'profile.logout_message'.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -777,7 +842,7 @@ class _LogoutDialog extends StatelessWidget {
                 side: const BorderSide(color: kColorAccentGold),
               ),
               child: Text(
-                'Cancel',
+                'profile.cancel'.tr(),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
@@ -794,7 +859,6 @@ class _LogoutDialog extends StatelessWidget {
               onPressed: onConfirm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
-                // foregroundColor: Colors.white,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -803,7 +867,7 @@ class _LogoutDialog extends StatelessWidget {
                 side: BorderSide(color: Colors.red.shade900),
               ),
               child: Text(
-                'Yes, log out',
+                'profile.confirm_logout'.tr(),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

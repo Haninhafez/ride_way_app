@@ -71,11 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // ── Logo & Brand ──────────────────────────────────
                       const AuthHeader(),
                       const SizedBox(height: 32),
 
-                      // ── Card ─────────────────────────────────────────
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
@@ -90,7 +88,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                           border: Border.all(
                             color: const Color.fromARGB(125, 0, 0, 0),
-                            // style: BorderStyle.none,
                             strokeAlign: BorderSide.strokeAlignOutside,
                           ),
                         ),
@@ -98,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Title & subtitle
                             Text(
                               context.tr('login.welcome'),
                               style: const TextStyle(
@@ -117,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 28),
 
-                            // Email field
                             CustomTextField(
                               label: context.tr('login.email_label'),
                               hint: context.tr('login.email_hint'),
@@ -135,7 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 20),
 
-                            // Password field
                             PasswordTextField(
                               label: context.tr('login.password_label'),
                               hint: '••••••••',
@@ -143,15 +137,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (_) => _onSignIn(),
                               validator: (v) {
-                                if (v == null || v.isEmpty)
+                                if (v == null || v.isEmpty) {
                                   return 'Enter password';
+                                }
                                 if (v.length < 6) return 'Min 6 characters';
                                 return null;
                               },
                             ),
                             const SizedBox(height: 16),
 
-                            // Keep signed in + Forgot password row
                             Row(
                               children: [
                                 SizedBox(
@@ -196,7 +190,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 28),
 
-                            // Sign in button
                             PrimaryButton(
                               label: context.tr('login.sign_in'),
                               onTap: _onSignIn,
@@ -204,7 +197,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 24),
 
-                            // Divider
                             Row(
                               children: [
                                 const Expanded(
@@ -230,7 +222,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Social auth buttons
                             Row(
                               children: [
                                 SocialAuthButton(
@@ -238,13 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   svgAsset:
                                       'assets/images/app_images/apple.svg',
                                   onTap: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Apple Sign-In coming soon',
-                                        ),
-                                      ),
-                                    );
+                                    AppToast.showError(context: context, message: 'Apple Sign-In coming soon');
+                                    
                                   },
                                 ),
                                 const SizedBox(width: 12),
@@ -252,11 +238,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   label: context.tr('login.nafath'),
                                   iconData: Icons.shield_outlined,
                                   onTap: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Nafath ID coming soon'),
-                                      ),
-                                    );
+                                    AppToast.showError(context: context, message: 'Nafath ID coming soon');
+                                   
                                   },
                                 ),
                               ],
@@ -266,7 +249,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Footer link
                       Center(
                         child: Wrap(
                           alignment: WrapAlignment.center,

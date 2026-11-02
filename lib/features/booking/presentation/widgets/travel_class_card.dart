@@ -20,7 +20,6 @@ class TravelClassCard extends StatelessWidget {
     if (isDark) {
       return isSelected ? const Color(0xFF2C2C2E) : const Color(0xFF1C1C1E);
     }
-    // Warm/Class Tints: #FBEFE3 for Business, #EFF2E6 for Economy/First
     if (travelClass.id == 'business') {
       return const Color(0xFFFBEFE3);
     }
@@ -50,7 +49,7 @@ class TravelClassCard extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -117,7 +116,7 @@ class TravelClassCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(

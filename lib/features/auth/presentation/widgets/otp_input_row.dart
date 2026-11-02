@@ -2,13 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// A row of 6 OTP digit input boxes.
-///
-/// CRITICAL: Always rendered in LTR digit order regardless of device locale,
-/// achieved by wrapping in [Directionality(textDirection: TextDirection.ltr)].
-///
-/// Auto-advances focus to the next box on digit entry and moves backward
-/// on backspace when the current box is empty.
 class OtpInputRow extends StatefulWidget {
   const OtpInputRow({
     super.key,
@@ -61,7 +54,6 @@ class _OtpInputRowState extends State<OtpInputRow> {
 
   @override
   Widget build(BuildContext context) {
-    // CRITICAL: OTP boxes must always be in LTR digit order
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Row(

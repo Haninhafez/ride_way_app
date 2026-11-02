@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +18,9 @@ class BookingSuccessScreen extends StatelessWidget {
     return BlocBuilder<BookingCubit, BookingState>(
       builder: (context, state) {
         final totalPaid = state.summary?.grandTotal ?? 623.0;
-        final seatNumbers = state.selectedSeats.map((s) => s.seatNumber).join(', ');
+        final seatNumbers = state.selectedSeats
+            .map((s) => s.seatNumber)
+            .join(', ');
 
         return Scaffold(
           body: SafeArea(
@@ -26,7 +30,6 @@ class BookingSuccessScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(),
-                  // Animated Success Icon Circle
                   Container(
                     width: 90,
                     height: 90,
@@ -53,25 +56,23 @@ class BookingSuccessScreen extends StatelessWidget {
                   Text(
                     'booking.success.subtitle'.tr(),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: kColorSubtitle,
-                    ),
+                    style: const TextStyle(fontSize: 14, color: kColorSubtitle),
                   ),
                   const SizedBox(height: 32),
 
-                  // Ticket Details Card
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA),
+                        color: isDark
+                            ? const Color(0xFF2C2C2E)
+                            : const Color(0xFFE5E5EA),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 16,
                           offset: const Offset(0, 4),
                         ),
@@ -91,9 +92,12 @@ class BookingSuccessScreen extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: kColorSuccess.withOpacity(0.12),
+                                color: kColorSuccess.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Text(
@@ -110,28 +114,49 @@ class BookingSuccessScreen extends StatelessWidget {
                         const SizedBox(height: 16),
                         const Divider(height: 1),
                         const SizedBox(height: 16),
-                        _buildDetailRow('Train', 'SE-200 (Saudi Express)', isDark),
+                        _buildDetailRow(
+                          'Train',
+                          '${state.trainDetail!.code.toString()} (Saudi Express)',
+                          isDark,
+                        ),
                         const SizedBox(height: 10),
-                        _buildDetailRow('Route', 'DMM ➔ JED', isDark),
+                        _buildDetailRow(
+                          'Route',
+                          '${state.trainDetail!.departureStationCode} ➔ ${state.trainDetail!.arrivalStationCode}',
+                          isDark,
+                        ),
                         const SizedBox(height: 10),
-                        _buildDetailRow('Class', state.selectedClass?.title ?? 'Business', isDark),
+                        _buildDetailRow(
+                          'Class',
+                          state.selectedClass?.title ?? 'Business',
+                          isDark,
+                        ),
                         const SizedBox(height: 10),
-                        _buildDetailRow('Seats', seatNumbers.isNotEmpty ? seatNumbers : '12A, 12B', isDark),
+                        _buildDetailRow(
+                          'Seats',
+                          seatNumbers.isNotEmpty ? seatNumbers : '-',
+                          isDark,
+                        ),
                         const SizedBox(height: 10),
-                        _buildDetailRow('Total Paid', 'SAR ${totalPaid.toStringAsFixed(0)}', isDark),
+                        _buildDetailRow(
+                          'Total Paid',
+                          'SAR ${totalPaid.toStringAsFixed(0)}',
+                          isDark,
+                        ),
                       ],
                     ),
                   ),
 
                   const Spacer(),
 
-                  // Actions
                   SizedBox(
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go('/home');
+                        final bookingId = state.bookingId;
+                        log("Booking Id : $bookingId");
+                        context.push('/digital-ticket/$bookingId');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kColorPrimaryAction,
@@ -153,6 +178,7 @@ class BookingSuccessScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () {
+                      context.read<BookingCubit>().close();
                       context.go('/home');
                     },
                     child: Text(
@@ -179,10 +205,7 @@ class BookingSuccessScreen extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            color: kColorSubtitle,
-          ),
+          style: const TextStyle(fontSize: 13, color: kColorSubtitle),
         ),
         Text(
           value,

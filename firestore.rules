@@ -1,0 +1,113 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── stations (public read, no write from client) ──────────────────────
+    match /stations/{stationId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── trips (authenticated read, no client write) ───────────────────────
+    match /trips/{tripId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+
+      // seats subcollection
+      match /seats/{seatId} {
+        allow read: if request.auth != null;
+        allow write: if false;
+      }
+    }
+
+    // ── trains (authenticated read, no client write) ──────────────────────
+    match /trains/{trainId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // ── users (owner only) ────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      match /recentSearches/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+      match /favoriteRoutes/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ── bookings (owner only — never publicly readable) ───────────────────
+    match /bookings/{bookingId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── payments (owner only) ─────────────────────────────────────────────
+    match /payments/{paymentId} {
+      allow read: if request.auth != null
+                  && request.auth.uid == resource.data.userId;
+      allow write: if false; // written only by Cloud Functions / trusted backend
+    }
+
+    // ── tickets (owner only) ──────────────────────────────────────────────
+    match /tickets/{ticketId} {
+      allow read: if request.auth != null
+                  && request.auth.uid == resource.data.userId;
+      allow write: if false;
+    }
+
+    // ── notifications (owner only) ────────────────────────────────────────
+    match /notifications/{notifId} {
+      allow read, update: if request.auth != null
+                          && request.auth.uid == resource.data.userId;
+      allow create, delete: if false;
+    }
+
+    // ── ticketShares ──────────────────────────────────────────────────────
+    //
+    // Security model:
+    //   • The OWNER (request.auth.uid == ownerUid) can:
+    //       - create a share document
+    //       - read their own shares
+    //       - update only the `revoked` field (to revoke)
+    //   • NO client can list the collection (prevents enumeration attacks)
+    //   • Public reads go ONLY through the `getSharedTicket` Cloud Function
+    //     which validates expiry and revocation before returning data.
+    //     The function uses the Firebase Admin SDK and bypasses these rules.
+    //
+    match /ticketShares/{token} {
+      // Owner can read their own share
+      allow get: if request.auth != null
+                 && request.auth.uid == resource.data.ownerUid;
+
+      // Owner can create a share (fields validated below)
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.ownerUid
+                    && request.resource.data.keys().hasAll([
+                         'bookingId','ownerUid','createdAt','expiresAt',
+                         'revoked','originCode','destinationCode','travelDate'
+                       ])
+                    && request.resource.data.revoked == false;
+
+      // Owner can revoke (flip revoked to true) — no other field changes
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.ownerUid
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['revoked'])
+                    && request.resource.data.revoked == true;
+
+      // Nobody can list or delete from the client
+      allow list, delete: if false;
+    }
+
+    // ── deny everything else ──────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/widgets/button_changing_language.dart';
-import 'package:ride_way_app/core/widgets/notfication_button.dart';
 import '../../../../core/themes/theme_data.dart';
 
 class HeaderRow extends StatelessWidget {
@@ -25,13 +24,12 @@ class HeaderRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            // User Avatar Badge
             Container(
               width: 44,
               height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: KColorDarkGrey,
+
                 border: Border.all(color: KColorDarkGold, width: 2),
               ),
               child: Center(
@@ -71,7 +69,6 @@ class HeaderRow extends StatelessWidget {
           ],
         ),
 
-        // Notification Bell Icon with Badge Counter
         ButtonChangingLanguage(),
       ],
     );

@@ -52,7 +52,7 @@ class BookingCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
@@ -61,7 +61,6 @@ class BookingCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row: Train code + Route + Status Pill
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -93,11 +92,10 @@ class BookingCard extends StatelessWidget {
                   ),
                 ],
               ),
-              // Status Pill
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.12),
+                  color: statusColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -115,7 +113,6 @@ class BookingCard extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 16),
 
-          // Metadata: Date + Times + Class Pill
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -162,7 +159,6 @@ class BookingCard extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 14),
 
-          // Footer Row: Ref & Passenger count + Clickable Action Link
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

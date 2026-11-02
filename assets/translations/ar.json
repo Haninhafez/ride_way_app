@@ -17,10 +17,10 @@
   "register": {
     "title": "إنشاء حسابك",
     "subtitle": "معلوماتك ستصبح هويتك في السفر",
-   "first_name_label": "الاسم الأول",
-"first_name_hint": "أدخل اسمك الأول",
-"last_name_label": "اسم العائلة",
-"last_name_hint": "أدخل اسم العائلة",
+    "first_name_label": "الاسم الأول",
+    "first_name_hint": "أدخل اسمك الأول",
+    "last_name_label": "اسم العائلة",
+    "last_name_hint": "أدخل اسم العائلة",
     "email_label": "البريد الإلكتروني",
     "email_hint": "name@example.com",
     "mobile_label": "رقم الجوال",
@@ -55,7 +55,8 @@
   },
   "common": {
     "app_name": "RideWay",
-    "back": "رجوع"
+    "back": "رجوع",
+    "retry": "إعادة المحاولة"
   },
   "search": {
     "greeting": "صباح الخير",
@@ -71,7 +72,8 @@
     "recent_searches": "عمليات البحث الأخيرة",
     "clear": "مسح",
     "saved_routes": "المسارات المحفوظة",
-    "trains_daily": "رحلات يومياً"
+    "trains_daily": "رحلات يومياً",
+    "select_station": "اختر محطة"
   },
   "train_list": {
     "active_route": "{} ➔ {}",
@@ -212,6 +214,28 @@
     "no_bookings": "لا توجد حجوزات",
     "no_notifications": "لا توجد إشعارات"
   },
+  "ticket": {
+    "cancelled_success": "تم إلغاء الحجز بنجاح.",
+    "cancel_failed": "فشل إلغاء الحجز. يرجى المحاولة مجدداً.",
+    "capture_failed": "تعذّر التقاط صورة التذكرة. يرجى المحاولة مجدداً.",
+    "share_text": "تذكرة قطار RideWay الخاصة بي. عرض التذكرة: {url}",
+    "share_success": "تم فتح قائمة المشاركة.",
+    "share_failed": "تعذّر مشاركة التذكرة. يرجى المحاولة مجدداً.",
+    "download_success": "تم حفظ التذكرة في مكتبة الصور.",
+    "download_failed": "تعذّر حفظ صورة التذكرة. يرجى المحاولة مجدداً.",
+    "download_permission_denied": "تم رفض الوصول إلى مكتبة الصور. يرجى السماح بالوصول من الإعدادات.",
+    "share_not_found": "التذكرة غير موجودة",
+    "share_not_found_sub": "هذا الرابط غير صالح أو تمت إزالته.",
+    "share_expired": "انتهت صلاحية الرابط",
+    "share_expired_sub": "لم يعد هذا الرابط صالحاً. اطلب من مالك التذكرة مشاركته مجدداً.",
+    "share_revoked": "التذكرة لم تعد مشاركة",
+    "share_revoked_sub": "أوقف المالك مشاركة هذه التذكرة.",
+    "share_network_error": "خطأ في الاتصال",
+    "shared_cancelled": "تم إلغاء هذا الحجز. هذه التذكرة لم تعد صالحة للسفر.",
+    "shared_view_only": "تذكرة مشاركة للعرض فقط",
+    "get_rideway_title": "احجز رحلتك القادمة",
+    "get_rideway_sub": "حمّل تطبيق RideWay للبحث والحجز وإدارة جميع رحلاتك بالقطار."
+  },
   "onboarding": {
     "page1_title": "ابحث واحجز في ثوانٍ",
     "page1_description": "اعثر على كل القطارات عبر المملكة واحجز بلمسات قليلة.",
@@ -219,5 +243,102 @@
     "page2_description": "شاهد العربة، اختر النافذة، وسافر بالطريقة التي تفضلها تماماً.",
     "page3_title": "تذاكرك دائماً معك",
     "page3_description": "أدر حجوزاتك وصعد القطار باستخدام تذكرة QR رقمية — حتى بدون اتصال بالإنترنت."
-  }
+  },
+  "notification": {
+    "title": "الإشعارات",
+    "mark_all_as_read": "تحديد الكل كمقروء",
+    "unread": "غير مقروء",
+    "today": "اليوم",
+    "earlier": "سابقًا",
+    "empty_title": "لا توجد إشعارات حتى الآن",
+    "empty_message": "ستظهر هنا تحديثات الحجز وتذكيرات الرحلات.",
+    "all_caught_up": "لقد قرأت جميع الإشعارات!",
+    "mark_as_read": "تحديد كمقروء",
+    "mark_as_unread": "تحديد كغير مقروء",
+    "delete": "حذف الإشعار",
+    "delete_all": "حذف جميع الإشعارات",
+    "delete_confirmation": "هل أنت متأكد أنك تريد حذف هذا الإشعار؟",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "view_booking": "عرض الحجز",
+    "view_ticket": "عرض التذكرة",
+    "types": {
+      "booking_confirmed": "تم تأكيد الحجز",
+      "payment_received": "تم استلام الدفع",
+      "payment_failed": "فشل الدفع",
+      "check_in_open": "موعد تسجيل الوصول قريب",
+      "trip_reminder": "تذكير بموعد الرحلة",
+      "trip_delayed": "تأخرت الرحلة",
+      "trip_cancelled": "تم إلغاء الرحلة",
+      "refund_processed": "تم رد المبلغ",
+      "trip_completed": "اكتملت الرحلة"
+    },
+    "messages": {
+      "booking_confirmed": "تم تأكيد حجزك لقطار {trainName}.",
+      "payment_received": "تم استلام دفعتك بقيمة {amount} بنجاح.",
+      "payment_failed": "تعذرت معالجة الدفع. يُرجى المحاولة مرة أخرى.",
+      "check_in_open": "سيفتح تسجيل الوصول لرحلتك على قطار {trainName} قريبًا.",
+      "trip_reminder": "ستنطلق رحلتك على قطار {trainName} خلال {minutes} دقيقة.",
+      "trip_delayed": "تأخرت رحلتك على قطار {trainName} لمدة {minutes} دقيقة.",
+      "trip_cancelled": "تم إلغاء رحلتك على قطار {trainName}.",
+      "refund_processed": "تم رد المبلغ بقيمة {amount}.",
+      "trip_completed": "شكرًا لاختيارك RideWay. نتمنى أن تكون رحلتك ممتعة."
+    },
+    "time": {
+      "just_now": "الآن",
+      "minutes_ago": "منذ {minutes} دقيقة",
+      "hours_ago": "منذ {hours} ساعة",
+      "yesterday": "أمس"
+    },
+    "errors": {
+      "load_failed": "فشل تحميل الإشعارات. يُرجى المحاولة مرة أخرى.",
+      "update_failed": "فشل تحديث الإشعار.",
+      "delete_failed": "فشل حذف الإشعار."
+    }
+  },
+  "profile": {
+    "information": "معلومات الملف الشخصي",
+    "membership": "فئة العضوية",
+    "gold": "ذهبي",
+    "points": "النقاط",
+    "trips": "الرحلات",
+    "since": "منذ",
+    "edit_profile": "تعديل الملف الشخصي",
+    "account_settings": "إعدادات الحساب",
+    "personal_details": "البيانات الشخصية",
+    "password_security": "كلمة المرور والأمان",
+    "booking_history": "سجل الحجوزات",
+    "payment_methods": "طرق الدفع",
+    "preferences": "التفضيلات",
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "arabic": "العربية",
+    "trip_notifications": "إشعارات الرحلات",
+    "dark_mode": "الوضع الداكن",
+    "support": "المساعدة والدعم",
+    "terms_privacy": "الشروط والخصوصية",
+    "logout": "تسجيل الخروج",
+    "logout_title": "هل تريد تسجيل الخروج من RideWay؟",
+    "logout_message": "ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حجوزاتك ومكافآتك وإعدادات حسابك.",
+    "cancel": "إلغاء",
+    "confirm_logout": "نعم، تسجيل الخروج",
+    "app_version": "RideWay الإصدار 2.4.0 · البناء 318",
+    "cards_count": "{} بطاقات",
+    "trips_count": "{} رحلة",
+    "points_semantics": "{} نقطة",
+    "user_avatar": "الصورة الشخصية",
+    "user_name": "اسم المستخدم",
+    "email_address": "البريد الإلكتروني",
+    "profile_card": "بطاقة معلومات الملف الشخصي",
+    "account_group": "مجموعة إعدادات الحساب",
+    "preferences_group": "مجموعة التفضيلات",
+    "support_group": "مجموعة الدعم والشروط",
+    "member_since": "عضو منذ {}",
+    "switch_on": "{}، مفعّل",
+    "switch_off": "{}، غير مفعّل"
+  },
+  "homenav": "الرئيسية",
+  "profilenav": "الملف الشخصي",
+  "notificationsnav": "الإشعارات",
+  "ticketsnav": "التذاكر"
 }

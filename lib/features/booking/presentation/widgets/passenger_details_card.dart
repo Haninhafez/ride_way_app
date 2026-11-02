@@ -33,7 +33,6 @@ class PassengerDetailsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Header / Toggle
           Semantics(
             label: 'Passenger ${passenger.index} details, ${isExpanded ? "expanded" : "collapsed"}',
             button: true,
@@ -111,7 +110,6 @@ class PassengerDetailsCard extends StatelessWidget {
             ),
           ),
 
-          // Collapsible Form
           AnimatedCrossFade(
             firstChild: const SizedBox.shrink(),
             secondChild: Padding(

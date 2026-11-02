@@ -37,7 +37,7 @@ class Notfication_button extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFD93838), // Crimson warning badge
+                  color: Color(0xFFD93838), 
                   shape: BoxShape.circle,
                 ),
                 constraints: const BoxConstraints(

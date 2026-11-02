@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// A versatile, brand-styled text input field.
-///
-/// Features:
-/// - [prefixIcon] — leading icon (mail, lock, phone, person)
-/// - [suffixIcon] — optional trailing widget (e.g. eye toggle)
-/// - White fill with [kColorBorder] outline; charcoal focus border
-/// - RTL-safe: icon positions flip automatically with [Directionality]
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
@@ -85,13 +78,10 @@ class CustomTextField extends StatelessWidget {
               horizontal: 16,
               vertical: 16,
             ),
-            // Prefix icon
             prefixIcon: prefixIcon != null
                 ? Icon(prefixIcon, color: kColorSubtitle, size: 20)
                 : null,
-            // Suffix icon (eye toggle, etc.)
             suffixIcon: suffixIcon,
-            // Borders
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
@@ -107,7 +97,7 @@ class CustomTextField extends StatelessWidget {
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: const Color.fromARGB(255, 119, 18, 18),
+                color: Color.fromARGB(255, 119, 18, 18),
                 width: 1,
               ),
             ),
@@ -125,7 +115,6 @@ class CustomTextField extends StatelessWidget {
   }
 }
 
-/// A password-specific [CustomTextField] with a built-in eye-toggle button.
 class PasswordTextField extends StatefulWidget {
   const PasswordTextField({
     super.key,

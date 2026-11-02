@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ride_way_app/core/error/failures.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/models/station_dto.dart';
+import 'package:ride_way_app/core/error/firebase_exception_mapper.dart';
 
 import '../../domain/entities/recent_search.dart';
 import '../../domain/entities/saved_route.dart';
@@ -14,29 +14,44 @@ import '../datasources/search_remote_data_source.dart';
 class SearchRepositoryImpl implements SearchRepository {
   final SearchRemoteDataSource remoteDataSource;
 
-  SearchRepositoryImpl({required this.remoteDataSource});
+  const SearchRepositoryImpl({required this.remoteDataSource});
+
 
   @override
-  Future<Either<Failure, List<StationDTO>>> getAvailableStations() async {
-  
-    final stations = await remoteDataSource.fetchStations();
-  return stations.fold(
-      (failure)=>Left(failure),
-      (stations) => Right(stations.map((station) => station).toList()),
-    );
+  Future<Either<Failure, List<Station>>> getAvailableStations() async {
+    try {
+      final dtos = await remoteDataSource.fetchStations();
+      return Right(List<Station>.from(dtos));
+    } on FirebaseException catch (e) {
+      return Left(mapFirebaseException(e));
+    } on TypeError catch (e) {
+      return Left(ParseFailure('Unexpected data format in stations: $e'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
 
   @override
   Future<Either<Failure, List<TrainSearchResult>>> searchTrains(
     SearchQuery query,
-  ) {
-    return remoteDataSource.fetchTrains(
-      originCode: query.originStation.code,
-      destinationCode: query.destinationStation.code,
-      date: query.departureDate,
-    );
+  ) async {
+    try {
+      final dtos = await remoteDataSource.fetchTrains(
+        originCode: query.originStation.code,
+        destinationCode: query.destinationStation.code,
+        date: query.departureDate,
+      );
+      return Right(List<TrainSearchResult>.from(dtos));
+    } on FirebaseException catch (e) {
+      return Left(mapFirebaseException(e));
+    } on TypeError catch (e) {
+      return Left(ParseFailure('Unexpected data format in trips: $e'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
+
 
   @override
   Future<Either<Failure, List<TrainSearchResult>>> filterAndSortTrains({
@@ -51,34 +66,34 @@ class SearchRepositoryImpl implements SearchRepository {
         list = list.where((t) => t.startingPrice <= maxPrice).toList();
       }
 
-      if (sortBy == 'cheapest') {
-        list.sort((a, b) => a.startingPrice.compareTo(b.startingPrice));
-      } else if (sortBy == 'earliest') {
-        list.sort((a, b) => a.departureTime.compareTo(b.departureTime));
-      } else if (sortBy == 'shortest') {
-        list.sort((a, b) => a.duration.compareTo(b.duration));
+      switch (sortBy) {
+        case 'cheapest':
+          list.sort((a, b) => a.startingPrice.compareTo(b.startingPrice));
+        case 'earliest':
+          list.sort((a, b) => a.departureTime.compareTo(b.departureTime));
+        case 'shortest':
+          list.sort((a, b) => a.duration.compareTo(b.duration));
       }
+
       return Right(list);
-    } on FirebaseException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Firebase error'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
+
   @override
-  Future<Either<Failure, void>> clearRecentSearches() {
-    // TODO: implement clearRecentSearches
-    throw UnimplementedError();
+  Future<Either<Failure, List<RecentSearch>>> getRecentSearches() async {
+    return const Right([]);
   }
 
   @override
-  Future<Either<Failure, List<RecentSearch>>> getRecentSearches() {
-    // TODO: implement getRecentSearches
-    throw UnimplementedError();
+  Future<Either<Failure, void>> clearRecentSearches() async {
+    return const Right(null);
   }
 
   @override
-  Future<Either<Failure, List<SavedRoute>>> getSavedRoutes() {
-    // TODO: implement getSavedRoutes
-    throw UnimplementedError();
+  Future<Either<Failure, List<SavedRoute>>> getSavedRoutes() async {
+    return const Right([]);
   }
 }

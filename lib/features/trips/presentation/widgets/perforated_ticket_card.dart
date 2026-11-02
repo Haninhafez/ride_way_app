@@ -21,14 +21,13 @@ class PerforatedTicketCard extends StatelessWidget {
 
     return Column(
       children: [
-        // Main Boarding Card Surface
         Container(
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -36,7 +35,6 @@ class PerforatedTicketCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Dark Header Block
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
@@ -75,7 +73,7 @@ class PerforatedTicketCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: kColorAccentGold.withOpacity(0.2),
+                        color: kColorAccentGold.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: kColorAccentGold, width: 1),
                       ),
@@ -92,12 +90,10 @@ class PerforatedTicketCard extends StatelessWidget {
                 ),
               ),
 
-              // Light Body Block: Route Row & Grid Metadata
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    // Route Row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -177,7 +173,6 @@ class PerforatedTicketCard extends StatelessWidget {
                     const Divider(height: 1),
                     const SizedBox(height: 20),
 
-                    // Grid Metadata Block
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -199,7 +194,6 @@ class PerforatedTicketCard extends StatelessWidget {
                 ),
               ),
 
-              // Perforated Tear Line with Semicircular Notches
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -246,7 +240,6 @@ class PerforatedTicketCard extends StatelessWidget {
                 ],
               ),
 
-              // Bottom QR Code Container Block
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: QRCodeWidget(

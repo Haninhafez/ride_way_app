@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ride_way_app/features/search_and_discovery/domain/usecases/get_station_usecase.dart';
-import '../../domain/entities/recent_search.dart';
-import '../../domain/entities/saved_route.dart';
 import '../../domain/entities/station.dart';
 import '../../domain/usecases/get_recent_searches_usecase.dart';
 import '../../domain/usecases/get_saved_routes_usecase.dart';
@@ -19,9 +17,12 @@ class SearchCubit extends Cubit<SearchState> {
   }) : super(SearchState());
 
   Future<void> loadStations() async {
+    if (isClosed) return;
+
     emit(state.copyWith(status: SearchStatus.loading));
 
     final stations = await getStationUseCase.execute();
+    if (isClosed) return;
     stations.fold(
       (failure) {
         emit(
@@ -47,22 +48,20 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   List<Station> getAvailableStations() {
-    return state.availableStations!
+    return state.availableStations
         .where((station) => station.code != state.fromStation?.code)
         .toList();
   }
 
   Future<void> loadDiscoveryData() async {
+    if (isClosed) return;
     emit(state.copyWith(status: SearchStatus.loading));
     try {
-      // final recents = await getRecentSearchesUseCase.execute();
-      // final saved = await getSavedRoutesUseCase.execute();
+      if(isClosed) return;
 
       emit(
         state.copyWith(
           status: SearchStatus.loaded,
-          // recentSearches: recents,
-          // savedRoutes: saved,
         ),
       );
     } catch (e) {
@@ -72,16 +71,11 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
- void swapStations() {
-  final temp = state.fromStation;
+  void swapStations() {
+    final temp = state.fromStation;
 
-  emit(
-    state.copyWith(
-      fromStation: state.toStation,
-      toStation: temp,
-    ),
-  );
-}
+    emit(state.copyWith(fromStation: state.toStation, toStation: temp));
+  }
 
   void updateOrigin(Station station) {
     emit(state.copyWith(fromStation: station));
@@ -107,36 +101,10 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  // Future<void> clearRecentSearches() async {
-  //   await getRecentSearchesUseCase.clearAll();
-  //   emit(state.copyWith(recentSearches: const []));
-  // }
+  int get passengerCount {
+    return state.passengerCount;
+  }
 
-  // void applyRecentSearch(RecentSearch recent) {
-  //   emit(state.copyWith(
-  //     originStation: Station(
-  //         stationCode: recent.originCode,
-  //         name: recent.originName,
-  //         city: recent.originName),
-  //     destinationStation: Station(
-  //         stationCode: recent.destinationCode,
-  //         name: recent.destinationName,
-  //         city: recent.destinationName),
-  //     departureDate: recent.departureDate,
-  //     passengerCount: recent.passengerCount,
-  //   ));
-  // }
 
-  // void applySavedRoute(SavedRoute route) {
-  //   emit(state.copyWith(
-  //     originStation: Station(
-  //         stationCode: route.originCode,
-  //         name: route.originName,
-  //         city: route.originName),
-  //     destinationStation: Station(
-  //         stationCode: route.destinationCode,
-  //         name: route.destinationName,
-  //         city: route.destinationName),
-  //   ));
-  // }
+
 }

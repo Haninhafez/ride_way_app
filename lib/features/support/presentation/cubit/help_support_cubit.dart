@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/faq_item.dart';
 import '../../domain/repositories/support_repository.dart';
 import '../../domain/usecases/get_faqs_usecase.dart';
 import '../../domain/usecases/search_faqs_usecase.dart';
@@ -77,7 +76,6 @@ class HelpSupportCubit extends Cubit<HelpSupportState> {
       await supportRepository.setAppLocale(code);
       emit(state.copyWith(selectedLanguage: code));
     } catch (e) {
-      // Ignore locale change errors
     }
   }
 

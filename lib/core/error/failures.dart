@@ -9,12 +9,10 @@ abstract class Failure extends Equatable {
   List<Object> get props => [message];
 }
 
-// Server Failure
 class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
-// Cache Failure
 class CacheFailure extends Failure {
   const CacheFailure(super.message);
 }
@@ -23,32 +21,42 @@ class NetworkFailure extends Failure {
   const NetworkFailure(super.message);
 }
 
-// Validation Failure
 class ValidationFailure extends Failure {
   const ValidationFailure(super.message);
 }
 
-// Authentication Failure
 class AuthenticationFailure extends Failure {
   const AuthenticationFailure(super.message);
 }
 
-// Authorization Failure
 class AuthorizationFailure extends Failure {
   const AuthorizationFailure(super.message);
 }
 
-// Not Found Failure
+class PermissionFailure extends Failure {
+  const PermissionFailure(super.message);
+}
+
 class NotFoundFailure extends Failure {
   const NotFoundFailure(super.message);
 }
 
-// Timeout Failure
 class TimeoutFailure extends Failure {
   const TimeoutFailure(super.message);
 }
 
+class ConflictFailure extends Failure {
+  const ConflictFailure(super.message);
+}
+
+class ParseFailure extends Failure {
+  const ParseFailure(super.message);
+}
 
 class UnknownFailure extends Failure {
   const UnknownFailure(super.message);
+}
+
+class PaymentFailure extends Failure { 
+  const PaymentFailure(super.message);
 }

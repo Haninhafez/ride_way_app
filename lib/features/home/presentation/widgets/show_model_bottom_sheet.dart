@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/features/search_and_discovery/domain/entities/station.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_state.dart';

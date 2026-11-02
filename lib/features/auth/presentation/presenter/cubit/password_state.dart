@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:ride_way_app/features/auth/presentation/widgets/password_strength_bar.dart';
 
-/// State emitted by [PasswordCubit] on every password change.
 class PasswordState extends Equatable {
   const PasswordState({
     this.password = '',

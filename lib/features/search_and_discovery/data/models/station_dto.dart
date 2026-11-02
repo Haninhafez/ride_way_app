@@ -10,25 +10,30 @@ class StationDTO extends Station {
     required super.lng,
   });
 
-  factory StationDTO.fromFirestore(Map<String, dynamic> data) {
+  factory StationDTO.fromFirestore(String id, Map<String, dynamic> map) {
     return StationDTO(
-      code: data['code'] ?? '',
-      name: data['name'] ?? '',
-      city: data['city'] ?? '',
-      nameAr: data['nameAr'] ?? '',
-      lat: (data['lat'] ?? 0).toDouble(),
-      lng: (data['lng'] ?? 0).toDouble(),
+      code: (map['code'] as String?)?.trim().isNotEmpty == true
+          ? (map['code'] as String).trim()
+          : id,
+      name: (map['name'] as String?) ?? '',
+      nameAr: (map['nameAr'] as String?) ?? '',
+      city: (map['city'] as String?) ?? '',
+      lat: (map['lat'] as num?)?.toDouble() ?? 0.0,
+      lng: (map['lng'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
-  Map<String, dynamic> toFirestore() {
-    return {
-      'code': code,
-      'name': name,
-      'city': city,
-      'nameAr': nameAr,
-      'lat': lat,
-      'lng': lng,
-    };
-  }
+  Map<String, dynamic> toMap() => {
+        'code': code,
+        'name': name,
+        'nameAr': nameAr,
+        'city': city,
+        'lat': lat,
+        'lng': lng,
+      };
+
+  @override
+  String toString() =>
+      'StationDTO(code: $code, name: $name, nameAr: $nameAr, '
+      'city: $city, lat: $lat, lng: $lng)';
 }

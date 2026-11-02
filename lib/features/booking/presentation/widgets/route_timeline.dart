@@ -64,7 +64,6 @@ class RouteTimeline extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Timeline Rail (Automatically aligns Left in LTR & Right in RTL)
                     Column(
                       children: [
                         Container(
@@ -103,7 +102,6 @@ class RouteTimeline extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(width: 16),
-                    // Stop Content
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 20),

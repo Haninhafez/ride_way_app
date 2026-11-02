@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../domain/entities/search_query.dart';
-import '../../domain/entities/station.dart';
 import '../cubit/train_list_cubit.dart';
 import '../cubit/train_list_state.dart';
 import '../widgets/date_strip_bar.dart';
@@ -12,9 +13,9 @@ import '../widgets/train_card.dart';
 import '../../../../core/themes/theme_data.dart';
 
 class TrainListScreen extends StatefulWidget {
-  final SearchQuery? searchQuery;
+  final SearchQuery searchQuery;
 
-  const TrainListScreen({super.key, this.searchQuery});
+  const TrainListScreen({super.key, required this.searchQuery});
 
   @override
   State<TrainListScreen> createState() => _TrainListScreenState();
@@ -26,22 +27,7 @@ class _TrainListScreenState extends State<TrainListScreen> {
   @override
   void initState() {
     super.initState();
-    _effectiveQuery =
-        widget.searchQuery ??
-        SearchQuery(
-          originStation:  Station(
-          
-            name: 'Dammam',
-            city: 'Dammam', code: '', nameAr: '', lat: 5.4, lng: 85,
-          ),
-          destinationStation:  Station(
-          
-            name: 'Jeddah',
-            city: 'Jeddah', code: '', nameAr: '', lat: 50, lng: 81,
-          ),
-          departureDate: DateTime(2026, 8, 14),
-          passengerCount: 2,
-        );
+    _effectiveQuery = widget.searchQuery;
 
     context.read<TrainListCubit>().executeSearch(_effectiveQuery);
   }
@@ -56,11 +42,7 @@ class _TrainListScreenState extends State<TrainListScreen> {
         final dateStr = DateFormat('EEE, d MMM').format(state.selectedDate);
 
         return Scaffold(
-          backgroundColor: isDark ? const Color(0xFF0F131A) : kColorBackground,
           appBar: AppBar(
-            backgroundColor: isDark
-                ? const Color(0xFF0F131A)
-                : kColorBackground,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -87,7 +69,6 @@ class _TrainListScreenState extends State<TrainListScreen> {
           ),
           body: Column(
             children: [
-              // Interactive Date Strip Bar
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
                 child: DateStripBar(
@@ -98,13 +79,12 @@ class _TrainListScreenState extends State<TrainListScreen> {
                 ),
               ),
 
-              // Sort & Filter Pill Row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: isDark ? KColorDarkGold : Colors.grey,
+                      color: !isDark ? KColorDarkGold : kColorAccentGold,
                       width: 1,
                     ),
                     borderRadius: BorderRadius.circular(20),
@@ -123,7 +103,6 @@ class _TrainListScreenState extends State<TrainListScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Results Count Subtitle & Train Cards Stream
               Expanded(child: _buildBodyContent(context, state, isDark)),
             ],
           ),
@@ -137,6 +116,8 @@ class _TrainListScreenState extends State<TrainListScreen> {
     TrainListState state,
     bool isDark,
   ) {
+    final trains = state.filteredTrains;
+    log(trains.toString());
     if (state.status == TrainListStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(color: kColorPrimaryAction),
@@ -188,7 +169,7 @@ class _TrainListScreenState extends State<TrainListScreen> {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: state.filteredTrains.length + 1,
+      itemCount: trains.length + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Padding(
@@ -210,7 +191,8 @@ class _TrainListScreenState extends State<TrainListScreen> {
         return TrainCard(
           train: train,
           onViewDetails: () {
-            context.push('/train-details?trainId=${train.trainCode}');
+            log('trainId=${train.trainCode}');
+            context.push('/train-details?trainId=${train.id}');
           },
         );
       },

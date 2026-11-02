@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 
-/// A pill-shaped social-auth button with an optional SVG icon.
-///
-/// Used for Apple and Nafath ID buttons on the Login screen.
 class SocialAuthButton extends StatelessWidget {
   const SocialAuthButton({
     super.key,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ride_way_app/core/di/injecation.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
+import 'package:ride_way_app/core/widgets/toast_app.dart';
 import 'package:ride_way_app/features/account/data/datasources/account_remote_data_source.dart';
 import 'package:ride_way_app/features/account/data/repositories/account_repository_impl.dart';
 import 'package:ride_way_app/features/account/domain/usecases/get_user_profile_usecase.dart';
@@ -91,37 +93,55 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accountRemoteDataSource = AccountRemoteDataSourceImpl();
-    final accountRepository = AccountRepositoryImpl(
-      remoteDataSource: accountRemoteDataSource,
-    );
-    final getUserProfileUseCase = GetUserProfileUseCase(accountRepository);
-    final updateUserProfileUseCase =
-        UpdateUserProfileUseCase(accountRepository);
-    final profileCubit = ProfileCubit(
-      getUserProfileUseCase: getUserProfileUseCase,
-    );
-    final editProfileCubit = EditProfileCubit(
-      updateUserProfileUseCase: updateUserProfileUseCase,
-    );
+    return BlocProvider<EditProfileCubit>(
+      create: (context) {
+        final cubit = sl<EditProfileCubit>();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<ProfileCubit>(
-          create: (context) => profileCubit..loadProfile(),
-        ),
-        BlocProvider<EditProfileCubit>(
-          create: (context) => editProfileCubit,
-        ),
-      ],
-      child: BlocListener<ProfileCubit, ProfileState>(
-        listener: (context, profileState) {
-          if (profileState.status == ProfileStatus.loaded &&
-              profileState.profile != null) {
-            final cubit = context.read<EditProfileCubit>();
-            cubit.initFromProfile(profileState.profile!);
-          }
-        },
+        // Get the existing profile from the global ProfileCubit
+        final profile = context.read<ProfileCubit>().state.profile;
+
+        if (profile != null) {
+          cubit.initFromProfile(profile);
+        }
+
+        return cubit;
+      },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ProfileCubit, ProfileState>(
+            listener: (context, profileState) {
+              if (profileState.status == ProfileStatus.loaded &&
+                  profileState.profile != null) {
+                context.read<EditProfileCubit>().initFromProfile(
+                  profileState.profile!,
+                );
+              }
+            },
+          ),
+
+          BlocListener<EditProfileCubit, EditProfileState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: (context, state) {
+              if (state.status == EditProfileStatus.saved) {
+                // Update the global profile
+                context.read<ProfileCubit>().loadProfile();
+
+                AppToast.showSuccess(
+                  context: context,
+                  message: 'Profile updated successfully',
+                );
+
+                context.pop();
+              } else if (state.status == EditProfileStatus.error) {
+                AppToast.showError(
+                  context: context,
+                  message: state.errorMessage ?? 'Failed to update profile',
+                );
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<EditProfileCubit, EditProfileState>(
           builder: (context, state) {
             final cubit = context.read<EditProfileCubit>();
@@ -131,24 +151,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             return Directionality(
               textDirection: Directionality.of(context),
               child: Scaffold(
-                backgroundColor: kColorBackground,
                 appBar: AppBar(
-                  backgroundColor: kColorBackground,
                   elevation: 0,
                   centerTitle: true,
                   leading: IconButton(
                     onPressed: () => context.pop(),
-                    icon: Icon(
-                      Icons.adaptive.arrow_back,
-                      color: kColorPrimaryAction,
-                    ),
+                    icon: Icon(Icons.adaptive.arrow_back),
                   ),
                   title: const Text(
                     'Edit profile',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      color: kColorPrimaryAction,
                       fontFamily: 'ReadexPro',
                     ),
                   ),
@@ -180,11 +194,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                   Positioned(
-                                    right: Directionality.of(context) ==
+                                    right:
+                                        Directionality.of(context) ==
                                             TextDirection.rtl
                                         ? null
                                         : -2,
-                                    left: Directionality.of(context) ==
+                                    left:
+                                        Directionality.of(context) ==
                                             TextDirection.rtl
                                         ? -2
                                         : null,
@@ -294,7 +310,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           bottom: MediaQuery.of(context).padding.bottom + 16,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.08),
@@ -310,35 +325,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           label: 'Save changes',
                           onTap: isSaving
                               ? null
-                              : () async {
-                                  await cubit.saveChanges();
-                                  if (context.mounted) {
-                                    if (state.status ==
-                                        EditProfileStatus.saved) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Profile updated successfully',
-                                          ),
-                                          backgroundColor: kColorSuccess,
-                                        ),
-                                      );
-                                      context.pop();
-                                    } else if (state.status ==
-                                        EditProfileStatus.error) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            state.errorMessage ??
-                                                'Failed to update profile',
-                                          ),
-                                          backgroundColor: Colors.redAccent,
-                                        ),
-                                      );
-                                    }
-                                  }
+                              : () {
+                                  cubit.saveChanges();
+                                  context.read<ProfileCubit>().updateProfile(
+                                    state.profile!,
+                                  );
                                 },
                           isLoading: isSaving,
                         ),
@@ -419,17 +410,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
               if (!isRTL)
-                Container(
-                  width: 1,
-                  height: 32,
-                  color: kColorBorder,
-                )
+                Container(width: 1, height: 32, color: kColorBorder)
               else
-                Container(
-                  width: 1,
-                  height: 32,
-                  color: kColorBorder,
-                ),
+                Container(width: 1, height: 32, color: kColorBorder),
               if (isRTL) _buildCountryCodePrefix(),
               if (!isRTL)
                 Expanded(
@@ -479,10 +462,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Semantics(
       label: 'Country code +966 Saudi Arabia',
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.horizontal(
             left: Radius.circular(12),
@@ -563,11 +543,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
-                Icon(
-                  Icons.lock_outline,
-                  color: kColorSubtitle,
-                  size: 18,
-                ),
+                Icon(Icons.lock_outline, color: kColorSubtitle, size: 18),
               ],
             ),
           ),

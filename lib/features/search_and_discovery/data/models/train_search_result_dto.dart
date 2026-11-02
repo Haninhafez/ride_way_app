@@ -19,24 +19,76 @@ class TrainSearchResultDTO extends TrainSearchResult {
   });
 
   factory TrainSearchResultDTO.fromFirestore(
-    String documentId,
-    Map<String, dynamic> data,
+    String id,
+    Map<String, dynamic> map,
   ) {
+    final rawClasses = map['classes'];
+    final classes = rawClasses is List ? rawClasses : <dynamic>[];
+
+    double startingPrice = 0.0;
+    int totalSeats = 0;
+
+    if (classes.isNotEmpty) {
+      final prices = classes
+          .whereType<Map<String, dynamic>>()
+          .map((c) => (c['price'] as num?)?.toDouble() ?? 0.0)
+          .where((p) => p > 0);
+
+      startingPrice = prices.isNotEmpty ? prices.reduce(_min) : 0.0;
+
+      totalSeats = classes
+          .whereType<Map<String, dynamic>>()
+          .fold(0, (sum, c) => sum + ((c['seatsAvailable'] as num?)?.toInt() ?? 0));
+    }
+
+    final durationMinutes = (map['durationMinutes'] as num?)?.toInt() ?? 0;
+    final durationLabel = durationMinutes > 0
+        ? '${durationMinutes ~/ 60}h ${durationMinutes % 60}m'
+        : '';
+
+    final rawStatus = (map['status'] as String?) ?? 'scheduled';
+    final displayStatus = _mapStatus(rawStatus);
+
     return TrainSearchResultDTO(
-      id: documentId,
-      trainCode: data['trainCode'] ?? '',
-      trainName: data['trainName'] ?? '',
-      departureTime: data['departureTime'] ?? '',
-      arrivalTime: data['arrivalTime'] ?? '',
-      duration: data['duration'] ?? '',
-      originCode: data['originCode'] ?? '',
-      destinationCode: data['destinationCode'] ?? '',
-      originName: data['originName'] ?? '',
-      destinationName: data['destinationName'] ?? '',
-      startingPrice: (data['startingPrice'] ?? 0).toDouble(),
-      availableSeatsCount: data['availableSeatsCount'] ?? 0,
-      status: data['status'] ?? 'On time',
-      amenities: List<String>.from(data['amenities'] ?? []),
+      id: id,
+      trainCode: (map['trainCode'] as String?) ?? '',
+      trainName: (map['trainName'] as String?) ?? '',
+      departureTime: (map['departureTime'] as String?) ?? '',
+      arrivalTime: (map['arrivalTime'] as String?) ?? '',
+      duration: durationLabel,
+      originCode: (map['fromStationCode'] as String?) ?? '',
+      destinationCode: (map['toStationCode'] as String?) ?? '',
+      originName: (map['originName'] as String?) ??
+          (map['fromStationCode'] as String?) ?? '',
+      destinationName: (map['destinationName'] as String?) ??
+          (map['toStationCode'] as String?) ?? '',
+      startingPrice: startingPrice,
+      availableSeatsCount: totalSeats,
+      status: displayStatus,
+      amenities: List<String>.from((map['amenities'] as List?) ?? []),
     );
   }
+
+
+  static double _min(double a, double b) => a < b ? a : b;
+
+  static String _mapStatus(String raw) {
+    switch (raw) {
+      case 'delayed':
+        return 'Delayed';
+      case 'cancelled':
+        return 'Cancelled';
+      case 'scheduled':
+      default:
+        return 'On time';
+    }
+  }
+
+  @override
+  String toString() =>
+      'TrainSearchResultDTO(id: $id, trainCode: $trainCode, '
+      'from: $originCode → $destinationCode, '
+      'departure: $departureTime, arrival: $arrivalTime, '
+      'duration: $duration, startingPrice: $startingPrice SAR, '
+      'seats: $availableSeatsCount, status: $status)';
 }

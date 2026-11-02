@@ -44,10 +44,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
         child: Column(
           children: [
-            // Top Navigation Row
             Row(
               children: [
-                // Back Arrow: Shows ONLY when currentPage > 0
                 if (currentPage > 0)
                   GestureDetector(
                     onTap: () => _controller.previousPage(
@@ -62,7 +60,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                 const Spacer(),
 
-                // Skip Button
                 GestureDetector(
                   onTap: ()async{
                        await CacheHelper.saveData(
@@ -96,7 +93,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
 
-            // Page View
             Expanded(
               child: PageView.builder(
                 controller: _controller,
@@ -109,7 +105,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Bottom Indicators and Next Button
             Row(
               children: [
                 SmoothPageIndicator(

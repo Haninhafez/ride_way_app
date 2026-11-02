@@ -38,11 +38,10 @@ class StationSwapInput extends StatelessWidget {
         ),
       ),
       child: Stack(
-        alignment: Alignment.centerRight,
+        alignment: AlignmentDirectional.centerEnd,
         children: [
           Column(
             children: [
-              // From Field
               GestureDetector(
                 onTap: () {
                   showModelBottomSheet(context, isFrom: true);
@@ -57,7 +56,6 @@ class StationSwapInput extends StatelessWidget {
               const SizedBox(height: 8),
               const Divider(height: 1),
               const SizedBox(height: 8),
-              // To Field
               GestureDetector(
                 onTap: () {
                   showModelBottomSheet(context, isFrom: false);
@@ -72,35 +70,37 @@ class StationSwapInput extends StatelessWidget {
             ],
           ),
 
-          // Swap Directional Button (⇅)
-          Semantics(
-            label: 'search.swap_stations'.tr(),
-            button: true,
-            child: InkWell(
-              onTap: onSwap,
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: kColorPrimaryAction,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    '⇅',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+          Directionality(
+            textDirection: Directionality.of(context),
+            child: Semantics(
+              label: 'search.swap_stations'.tr(),
+              button: true,
+              child: InkWell(
+                onTap: onSwap,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: kColorPrimaryAction,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      '⇅',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -152,14 +152,13 @@ class StationSwapInput extends StatelessWidget {
             ],
           ),
         ),
-        // Enforce strictly LTR format for station codes (e.g., "DMM", "JED") across both English & Arabic locales
         if (station != null) ...[
           Directionality(
             textDirection: ui.TextDirection.ltr,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: kColorAccentGold.withOpacity(0.15),
+                color: kColorAccentGold.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

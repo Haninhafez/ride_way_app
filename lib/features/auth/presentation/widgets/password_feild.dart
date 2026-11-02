@@ -1,6 +1,3 @@
-// password_feild.dart — Legacy stub kept for backward compatibility.
-// The new [PasswordTextField] in custom_text_field.dart supersedes this widget.
-// No active screens reference this file; it is retained to avoid orphan errors.
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/features/auth/presentation/widgets/custom_text_field.dart';
 
@@ -19,7 +16,7 @@ class PasswordFeild extends StatefulWidget {
 }
 
 class _PasswordFeildState extends State<PasswordFeild> {
-  bool _obscure = true;
+  final bool _obscure = true;
 
   @override
   Widget build(BuildContext context) {

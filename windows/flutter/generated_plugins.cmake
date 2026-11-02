@@ -3,14 +3,20 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
   cloud_firestore
   connectivity_plus
   firebase_auth
   firebase_core
+  flutter_timezone
+  gal
+  share_plus
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   dotlottie_flutter
+  flutter_local_notifications_windows
   jni
 )
 

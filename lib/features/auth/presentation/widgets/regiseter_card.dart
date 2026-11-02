@@ -1,5 +1,3 @@
-// regiseter_card.dart — Legacy stub kept for backward compatibility.
-// RegisterScreen now renders its form inline; this card is no longer used.
 import 'package:flutter/material.dart';
 
 class RegisterCard extends StatelessWidget {

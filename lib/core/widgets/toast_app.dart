@@ -3,7 +3,6 @@ import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:toastification/toastification.dart';
 
 abstract class AppToast {
-  /// Shows an Error Toast
   static void showError({
     required BuildContext context,
     required String message,
@@ -25,7 +24,6 @@ abstract class AppToast {
     );
   }
 
-  /// Shows a Success Toast
   static void showSuccess({
     required BuildContext context,
     required String message,
@@ -43,7 +41,6 @@ abstract class AppToast {
     );
   }
 
-  /// Shows an Info / Warning Toast
   static void showInfo({
     required BuildContext context,
     required String message,

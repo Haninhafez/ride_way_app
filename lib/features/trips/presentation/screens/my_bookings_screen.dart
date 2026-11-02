@@ -53,7 +53,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
           ),
           body: Column(
             children: [
-              // Segmented Tab Controller with Counters
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Container(
@@ -100,7 +99,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
                 ),
               ),
 
-              // Booking Cards Stream
               Expanded(
                 child: _buildBookingsList(context, state, isDark),
               ),
@@ -149,7 +147,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
         return BookingCard(
           booking: booking,
           onTapDetails: () {
-            context.push('/booking-detail/${booking.id}');
+          context.push('/booking-detail/${booking.id}');
           },
         );
       },

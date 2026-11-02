@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:ride_way_app/core/themes/theme_data.dart';
 import 'package:ride_way_app/features/account/presentation/screens/profile_screen.dart';
-import 'package:ride_way_app/features/map/presentation/map_screen.dart';
 import 'package:ride_way_app/features/notfication/presentation/notfication_screen.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/screens/search_screen.dart';
-import 'package:ride_way_app/features/ticket/presentation/ticket_screen.dart';
+import 'package:ride_way_app/features/tickets/presentation/pages/history_tickets_page.dart';
+import 'package:ride_way_app/features/trips/presentation/screens/my_bookings_screen.dart';
 
 class NavigationBar extends StatefulWidget {
   const NavigationBar({super.key});
@@ -15,9 +16,9 @@ class NavigationBar extends StatefulWidget {
 
 class _NavigationBarState extends State<NavigationBar> {
   final List<Widget> screens = [
-    const SearchScreen(), // Main Home Surface & Search
+    const SearchScreen(),
 
-    const TicketScreen(),
+    const MyBookingsScreen(),
     const NotficationScreen(),
     const ProfileScreen(),
   ];
@@ -26,8 +27,8 @@ class _NavigationBarState extends State<NavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.locale;
     return Scaffold(
-      backgroundColor: kColorBackgroundnew,
       body: IndexedStack(index: currentIndex, children: screens),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
@@ -47,26 +48,26 @@ class _NavigationBarState extends State<NavigationBar> {
             onTap: (index) => setState(() {
               currentIndex = index;
             }),
-            items: const [
+            items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),
                 activeIcon: Icon(Icons.home),
-                label: "Home",
+                label: tr('homenav', context: context),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.confirmation_number_outlined),
                 activeIcon: Icon(Icons.confirmation_number),
-                label: "My Tickets",
+                label: tr('ticketsnav', context: context),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.notifications_outlined),
                 activeIcon: Icon(Icons.notifications),
-                label: "Notification",
+                label: tr('notificationsnav', context: context),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person_outline),
                 activeIcon: Icon(Icons.person),
-                label: "Profile",
+                label: tr('profilenav', context: context),
               ),
             ],
           ),

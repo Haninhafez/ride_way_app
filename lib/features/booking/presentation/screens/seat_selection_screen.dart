@@ -46,13 +46,14 @@ class SeatSelectionScreen extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.all(16),
                   child: SeatGridView(
-                    selectedCoach: state.selectedCoachNumber,
+                    classes: state.trainDetail?.classOptions ?? [],
+                    selectedClassId: state.selectedClass?.id ?? '',
+                    onClassSelected: (travelClass) {
+                      context.read<BookingCubit>().selectClass(travelClass);
+                    },
                     seats: state.coachSeats,
                     selectedSeats: state.selectedSeats,
                     passengers: state.passengers,
-                    onCoachSelected: (coachNum) {
-                      context.read<BookingCubit>().loadSeatsForCoach(coachNum);
-                    },
                     onSeatTapped: (seat) {
                       context.read<BookingCubit>().toggleSeatSelection(seat);
                     },
@@ -60,7 +61,6 @@ class SeatSelectionScreen extends StatelessWidget {
                 ),
               ),
 
-              // Sticky Bottom Action Bar
               StickyBottomActionBar(
                 title: 'SAR ${totalCalc.toStringAsFixed(0)}',
                 subtitle: 'booking.seat_selection.seats_selected'.tr(

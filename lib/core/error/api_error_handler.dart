@@ -1,9 +1,7 @@
-// core/errors/dio_error_handler.dart
 import 'package:dio/dio.dart';
 import 'package:ride_way_app/core/error/exceptions.dart';
 
 class DioErrorHandler {
-  /// Call this inside every catch (DioException e) block in your data sources
   static AppException handle(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
@@ -25,7 +23,6 @@ class DioErrorHandler {
 
       case DioExceptionType.unknown:
       default:
-        // usually happens when there's no internet at all (SocketException)
         if (error.message?.contains('SocketException') ?? false) {
           return NoInternetException();
         }
@@ -37,7 +34,6 @@ class DioErrorHandler {
     final statusCode = error.response?.statusCode;
     final data = error.response?.data;
 
-    // Try to extract a message from the backend response, e.g. {"message": "..."}
     String? serverMessage;
     if (data is Map<String, dynamic>) {
       serverMessage = data['message'] ?? data['error'];

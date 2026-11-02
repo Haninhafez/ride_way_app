@@ -1,4 +1,3 @@
-// core/error/exception_to_failure_mapper.dart
 
 
 
@@ -32,7 +31,6 @@ Failure mapExceptionToFailure(AppException exception) {
     case CacheException:
       return CacheFailure(exception.message);
 
-    // ParsingException, UnknownException, وأي حاجة تانية مش متوقعة
     default:
       return UnknownFailure(exception.message);
   }

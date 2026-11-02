@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ride_way_app/core/database/api/api_end_points.dart';
 import 'package:ride_way_app/core/database/cache/cache_helper.dart';
-import 'package:ride_way_app/features/search_and_discovery/data/models/add_trains.dart';
+import 'package:ride_way_app/core/notifications/notification_service.dart';
+import 'package:ride_way_app/core/widgets/toast_app.dart';
+import 'package:ride_way_app/features/account/presentation/cubit/profile_cubit.dart';
 import 'package:ride_way_app/features/search_and_discovery/domain/entities/station.dart';
 import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/header_row.dart';
 import '../widgets/passenger_stepper.dart';
-import '../widgets/recent_searches_widget.dart';
-import '../widgets/saved_routes_widget.dart';
 import '../widgets/station_swap_input.dart';
 import '../../../../core/themes/theme_data.dart';
 
@@ -38,7 +38,16 @@ class _SearchScreenState extends State<SearchScreen> {
         final dateFormatted = DateFormat(
           'EEE, d MMM yyyy',
         ).format(state.departureDate ?? DateTime.now());
-
+        final firstName = context
+            .select<ProfileCubit, String>(
+              (cubit) => cubit.state.profile?.firstName ?? '',
+            )
+            .trim();
+        final lastName = context
+            .select<ProfileCubit, String>(
+              (cubit) => cubit.state.profile?.lastName ?? '',
+            )
+            .trim();
         return Scaffold(
           backgroundColor: isDark ? kColorBackgroundnew : kColorBackground,
           body: SafeArea(
@@ -48,18 +57,13 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header Row
                   HeaderRow(
-                    userName:
-                        CacheHelper.getData(ApiKeys.firstName) ??
-                        '' + CacheHelper.getData(ApiKeys.lastName) ??
-                        '',
+                    userName: "$firstName $lastName",
                     unreadCount: state.unreadNotificationsCount,
                     onNotificationTap: () {},
                   ),
                   const SizedBox(height: 24),
 
-                  // Main Headline
                   Text(
                     'search.headline'.tr(),
                     style: TextStyle(
@@ -70,7 +74,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Main Search Card
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -78,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 16,
                           offset: const Offset(0, 4),
                         ),
@@ -86,14 +89,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
                       border: Border.all(
                         color: isDark ? KColorDarkGold : Colors.grey,
-                        // style: BorderStyle.none,
                         strokeAlign: BorderSide.strokeAlignOutside,
                       ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // From / To Stacked Inputs with swap button
                         StationSwapInput(
                           origin:
                               state.fromStation ??
@@ -122,7 +123,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Date Picker Trigger
                         GestureDetector(
                           onTap: () async {
                             final today = DateTime.now();
@@ -196,7 +196,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      dateFormatted,
+                                      'Booking Date: ',
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -213,7 +213,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Passenger Stepper Widget
                         PassengerStepper(
                           count: state.passengerCount,
                           onIncrement: () {
@@ -225,12 +224,19 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        // Primary Action Search Button
                         SizedBox(
                           width: double.infinity,
                           height: 52,
                           child: GestureDetector(
                             onTap: () {
+                              if (state.searchQuery == null) {
+                                AppToast.showError(
+                                  context: context,
+                                  message: "Please select a station and date",
+                                );
+
+                                return;
+                              }
                               context.push(
                                 '/train-list',
                                 extra: state.searchQuery,
@@ -267,38 +273,15 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ),
+
+                        SizedBox(height: 50),
                       ],
                     ),
                   ),
                   const SizedBox(height: 28),
+                  
 
-                  // Recent Searches Section
-                  // RecentSearchesWidget(
-                  //   recentSearches: state.recentSearches,
-                  //   onClear: () {
-                  //     context.read<SearchCubit>().clearRecentSearches();
-                  //   },
-                  //   onSelect: (recent) {
-                  //     context.read<SearchCubit>().applyRecentSearch(recent);
-                  //     context.push(
-                  //       '/train-list',
-                  //       extra: context.read<SearchCubit>().state.searchQuery,
-                  //     );
-                  //   },
-                  // ),
                   const SizedBox(height: 24),
-
-                  // Saved Routes Section
-                  // SavedRoutesWidget(
-                  //   savedRoutes: state.savedRoutes,
-                  //   onSelect: (saved) {
-                  //     context.read<SearchCubit>().applySavedRoute(saved);
-                  //     context.push(
-                  //       '/train-list',
-                  //       extra: context.read<SearchCubit>().state.searchQuery,
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),

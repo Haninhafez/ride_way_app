@@ -63,7 +63,6 @@ class BookingSummaryCard extends StatelessWidget {
                   color: isDark ? Colors.white : kColorPrimaryAction,
                 ),
               ),
-              // Currency label "SAR 623" remains standard across both locales as specified
               Text(
                 'SAR ${summary.grandTotal.toStringAsFixed(0)}',
                 style: TextStyle(

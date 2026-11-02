@@ -26,26 +26,32 @@ class TrainListState extends Equatable {
   }) : selectedDate = selectedDate ?? DateTime(2026, 8, 14);
 
   TrainListState copyWith({
-    TrainListStatus? status,
-    SearchQuery? query,
-    List<TrainSearchResult>? allTrains,
-    List<TrainSearchResult>? filteredTrains,
-    DateTime? selectedDate,
-    String? sortBy,
-    double? maxPriceFilter,
-    String? errorMessage,
-  }) {
-    return TrainListState(
-      status: status ?? this.status,
-      query: query ?? this.query,
-      allTrains: allTrains ?? this.allTrains,
-      filteredTrains: filteredTrains ?? this.filteredTrains,
-      selectedDate: selectedDate ?? this.selectedDate,
-      sortBy: sortBy ?? this.sortBy,
-      maxPriceFilter: maxPriceFilter ?? this.maxPriceFilter,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-  }
+  TrainListStatus? status,
+  SearchQuery? query,
+  List<TrainSearchResult>? allTrains,
+  List<TrainSearchResult>? filteredTrains,
+  DateTime? selectedDate,
+  String? sortBy,
+  Object? maxPriceFilter = _notSet,
+  Object? errorMessage = _notSet,
+}) {
+  return TrainListState(
+    status: status ?? this.status,
+    query: query ?? this.query,
+    allTrains: allTrains ?? this.allTrains,
+    filteredTrains: filteredTrains ?? this.filteredTrains,
+    selectedDate: selectedDate ?? this.selectedDate,
+    sortBy: sortBy ?? this.sortBy,
+    maxPriceFilter: maxPriceFilter == _notSet
+        ? this.maxPriceFilter
+        : maxPriceFilter as double?,
+    errorMessage: errorMessage == _notSet
+        ? this.errorMessage
+        : errorMessage as String?,
+  );
+}
+
+static const _notSet = Object();
 
   @override
   List<Object?> get props => [

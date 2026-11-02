@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ride_way_app/core/database/api/api_end_points.dart';
+import 'package:ride_way_app/core/database/cache/cache_helper.dart';
+
 import '../models/user_profile_dto.dart';
 
 abstract class AccountRemoteDataSource {
@@ -8,29 +12,22 @@ abstract class AccountRemoteDataSource {
 }
 
 class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
+  final FirebaseFirestore firestore;
+
+  AccountRemoteDataSourceImpl({required this.firestore});
   @override
   Future<UserProfileDTO> fetchUserProfile() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return const UserProfileDTO(
-      id: 'usr_1094552831',
-      firstName: 'Nasser',
-      lastName: 'Al-Harbi',
-      email: 'nasser.alharbi@mail.com',
-      phoneNumber: '+966 50 123 4567',
-      dateOfBirth: '1990-05-15T00:00:00.000Z',
-      nationalId: '1094552831',
-      avatarUrl: 'assets/profile.png',
-      tier: 'Gold',
-      points: 12480,
-      totalTrips: 34,
-      memberSince: '2023',
-      isVerifiedWithNafath: true,
-    );
+    final userId = CacheHelper.getData(ApiKeys.id);
+    final userData = await firestore.collection('users').doc(userId).get();
+    return UserProfileDTO.fromJson(userData.data()!);
   }
 
   @override
   Future<UserProfileDTO> updateUserProfile(UserProfileDTO dto) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+    final userId = CacheHelper.getData(ApiKeys.id);
+
+    await firestore.collection('users').doc(userId).update(dto.toJson());
+
     return dto;
   }
 

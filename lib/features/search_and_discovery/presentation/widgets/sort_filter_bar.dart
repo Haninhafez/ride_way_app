@@ -29,7 +29,6 @@ class SortFilterBar extends StatelessWidget {
 
     return Row(
       children: [
-        // Filter Button
         OutlinedButton.icon(
           onPressed: () {
             showModalBottomSheet(
@@ -63,17 +62,16 @@ class SortFilterBar extends StatelessWidget {
             side: BorderSide(
               color: maxPriceFilter != null
                   ? kColorAccentGold
-                  : (isDark ? const Color(0xFF2C2C2E) : const Color(0xFFE5E5EA)),
+                  : (isDark ? KColorDarkGold : kColorAccentGold),
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           ),
         ),
         const SizedBox(width: 8),
 
-        // Sort Option Pills
         Expanded(
           child: SizedBox(
             height: 38,
@@ -100,8 +98,9 @@ class SortFilterBar extends StatelessWidget {
                             ? Colors.white
                             : (isDark ? Colors.white70 : kColorPrimaryAction),
                       ),
-                      backgroundColor:
-                          isDark ? const Color(0xFF1C1C1E) : const Color(0xFFF2F2F7),
+                      backgroundColor: isDark
+                          ? const Color(0xFF1C1C1E)
+                          : const Color(0xFFF2F2F7),
                       selectedColor: kColorPrimaryAction,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),

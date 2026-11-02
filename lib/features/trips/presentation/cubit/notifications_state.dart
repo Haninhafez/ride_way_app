@@ -6,7 +6,7 @@ enum NotificationsStatus { initial, loading, success, error }
 class NotificationsState extends Equatable {
   final NotificationsStatus status;
   final List<TripNotification> allNotifications;
-  final int selectedFilterTab; // 0: All, 1: Unread
+  final int selectedFilterTab; 
   final String? errorMessage;
 
   const NotificationsState({

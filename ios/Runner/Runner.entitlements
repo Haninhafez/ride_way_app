@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    Universal Links (iOS 9+).
+    Replace YOUR_DOMAIN with the real domain, e.g. rideway.app.
+    Also add the domain to Xcode → Signing & Capabilities → Associated Domains.
+    The value must be exactly: applinks:YOUR_DOMAIN  (no https://)
+  -->
+  <key>com.apple.developer.associated-domains</key>
+  <array>
+    <string>applinks:YOUR_DOMAIN</string>
+  </array>
+</dict>
+</plist>

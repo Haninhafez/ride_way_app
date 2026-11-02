@@ -5,7 +5,7 @@ import '../../../../core/themes/theme_data.dart';
 class SeatHoldCountdown extends StatelessWidget {
   final String formattedTime;
 
-  const SeatHoldCountdown({
+  const   SeatHoldCountdown({
     super.key,
     required this.formattedTime,
   });
@@ -24,7 +24,7 @@ class SeatHoldCountdown extends StatelessWidget {
           color: isDark ? const Color(0xFF2C2518) : const Color(0xFFFFF9ED),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: kColorAccentGold.withOpacity(0.4),
+            color: kColorAccentGold.withValues(alpha: 0.4),
           ),
         ),
         child: Row(
