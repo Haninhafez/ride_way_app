@@ -17,6 +17,7 @@ import 'package:ride_way_app/features/booking/presentation/screens/payment_scree
 import 'package:ride_way_app/features/booking/presentation/screens/seat_selection_screen.dart';
 import 'package:ride_way_app/features/booking/presentation/screens/train_details_screen.dart';
 import 'package:ride_way_app/features/home/presentation/screen/navigation_bar.dart';
+import 'package:ride_way_app/features/notfication/presentation/notfication_screen.dart';
 import 'package:ride_way_app/features/onboarding/onboarding_screen.dart';
 import 'package:ride_way_app/features/search_and_discovery/domain/entities/search_query.dart';
 import 'package:ride_way_app/features/search_and_discovery/presentation/cubit/search_cubit.dart';
@@ -160,6 +161,11 @@ final GoRouter appRouter = GoRouter(
           child: NavigationBar(),
         );
       },
+    ),
+     GoRoute(
+      path: '/notification',
+      name: 'notification',
+      builder: (context, state) => NotficationScreen(),
     ),
     GoRoute(
       path: '/edit/profile',
